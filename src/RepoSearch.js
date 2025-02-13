@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 
 function RepoSearch() {
-  const [searchTerm, setSearchTerm] = useState(""); // for storing the search term
-  const [repos, setRepos] = useState([]); // for storing the repositories
-  const [error, setError] = useState(""); // for handling errors
+  const [searchTerm, setSearchTerm] = useState(""); //for the search term
+  const [repos, setRepos] = useState([]); //for storing the repos
+  const [error, setError] = useState(""); //for errors
 
   const handleSearch = () => {
-    if (!searchTerm.trim()) {
-      alert("Please enter a search term!");
+    if (!searchTerm) {
+      alert("Please enter a search term");
       return;
     }
 
@@ -16,29 +16,29 @@ function RepoSearch() {
     fetch(apiUrl)
       .then((response) => {
         if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+          throw new Error(`Error! Status: ${response.status}`);
         }
         return response.json();
       })
       .then((data) => {
         if (!data.items || data.items.length === 0) {
           setRepos([]);
-          setError("No repositories found.");
+          setError("No repositories found");
           return;
         }
         setRepos(data.items);
         setError("");
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching:", error);
         setRepos([]);
-        setError("Failed to fetch repositories. Please try again later.");
+        setError("Failed to fetch repositories. Please try again.");
       });
   };
 
   return (
     <div>
-      <h1>GitHub Repository Search</h1>
+      <h1>GitHub Scraper</h1>
       <input
         type="text"
         placeholder="Search for a repository..."
