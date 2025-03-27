@@ -84,32 +84,42 @@ function RepoSearch() {
   // Handle search
   const handleSearch = async () => {
     if (!searchTerm) {
-      alert("Please enter a search term");
+      alert("Please enter search keywords");
       return;
     }
-
-    const apiUrl = `https://api.github.com/search/repositories?q=${encodeURIComponent(
-      searchTerm
-    )}&per_page=10&page=1`;
-
+  
+    const rawKeywords = searchTerm
+      .split(",")
+      .map((kw) => kw.trim())
+      .filter((kw) => kw.length > 0);
+  
+    // 🔒 Enforce max 6 keywords
+    if (rawKeywords.length > 6) {
+      alert("Keyword limit reached. Please enter no more than 6 keywords.");
+      return;
+    }
+  
+    const keywords = rawKeywords.join("+");
+    const apiUrl = `https://api.github.com/search/repositories?q=${keywords}&per_page=10&page=1`;
+  
     try {
       const response = await fetch(apiUrl, { headers });
       if (!response.ok) {
         throw new Error(`Error! Status: ${response.status}`);
       }
-
+  
       const data = await response.json();
       if (!data.items || data.items.length === 0) {
         setRepos([]);
         setError("No repositories found");
         return;
       }
-
+  
       const reposWithDependencies = await Promise.all(
         data.items.map(async (repo) => {
           const files = await fetchRepoRootFiles(repo.owner.login, repo.name);
           let dependencies = [];
-
+  
           if (files) {
             dependencies = await Promise.all(
               files.map(async (file) => {
@@ -122,11 +132,11 @@ function RepoSearch() {
               })
             );
           }
-
+  
           return { ...repo, dependencies };
         })
       );
-
+  
       setRepos(reposWithDependencies);
       setError("");
     } catch (error) {
@@ -135,7 +145,8 @@ function RepoSearch() {
       setError("Failed to fetch repositories. Please try again.");
     }
   };
-
+  
+  
   return (
     <div>
       <h1>GitHub Scraper</h1>
