@@ -149,7 +149,7 @@ function RepoSearch() {
   
   return (
     <div>
-      <h1>GitHub Scraper</h1>
+      {/* <h1>GitHub Scraper</h1> */}
       <input
         type="text"
         placeholder="Search for a repository..."
