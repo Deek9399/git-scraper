@@ -11,3 +11,45 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Table Styling */
+
+.table-container {
+  padding: 20px;
+  background-color: #121212; 
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1); 
+}
+
+h2 {
+  text-align: center;
+  color: #ffffff;
+  font-family: 'Arial', sans-serif;
+  margin-bottom: 20px;
+}
+
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Arial', sans-serif;
+  color: #ffffff; 
+}
+
+.styled-table th {
+  background-color: #1e1e1e; 
+  color: white;
+  font-weight: bold;
+  padding: 12px 15px;
+  border: 1px solid #444; 
+}
+
+.styled-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border: 1px solid #333;
+}
+
+.styled-table td a {
+  color: #1e90ff;
+  text-decoration: underline;
+}
