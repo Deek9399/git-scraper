@@ -6,8 +6,8 @@ function App() {
     return (
         <div className="App">
             <h1>Web Scrapper</h1>
-            <GitHubProjects />
             <RepoSearch />
+            <GitHubProjects />
         </div>
     );
 }
