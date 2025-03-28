@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import GitHubLogo from "./assets/github-mark-white.svg";
 
 // 🔒 Replace this with your actual GitHub token
 
@@ -186,8 +187,21 @@ function RepoSearch() {
         alignItems: "center",
         fontFamily: "Segoe UI, sans-serif",
       }}>
-      {/* <h1>GitHub Scraper</h1> */}
-      <h1 style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>Web Scraper</h1>
+      <h1
+        style={{
+          fontSize: "3.2rem",
+          marginBottom: "1rem",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+        }}>
+        <img
+          src={GitHubLogo}
+          alt="GitHub Logo"
+          style={{ width: "50px", height: "50px" }}
+        />
+        Web Scraper
+      </h1>
       <p
         style={{
           color: "#8B949E",
