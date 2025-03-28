@@ -74,64 +74,96 @@ function RepoSearch() {
     return "Unsupported dependency format";
   };
 
+  //
+
+  const licenseMap = {
+    mit: "mit",
+    gnu: "gpl-3.0",
+    gpl: "gpl-3.0",
+    apache: "apache-2.0",
+    bsd: "bsd-2-clause",
+    unlicense: "unlicense",
+    lgpl: "lgpl-3.0",
+    mozilla: "mpl-2.0",
+    eclipse: "epl-2.0",
+  };
+  
   const handleSearch = async () => {
     if (!searchTerm) {
       setDialogMessage("Please enter search keywords");
       return;
     }
-
+  
     const rawKeywords = searchTerm
       .split(",")
-      .map((kw) => kw.trim())
+      .map((kw) => kw.trim().toLowerCase())
       .filter((kw) => kw.length > 0);
-
-    if (rawKeywords.length > 6) {
-      setDialogMessage("Keyword limit reached. Please enter no more than 6 keywords.");
-      return;
-    }
-
-    const keywords = rawKeywords.join("+");
-    const apiUrl = `https://api.github.com/search/repositories?q=${keywords}`;
-
-    try {
-      const response = await fetch(apiUrl, { headers });
-      if (!response.ok) throw new Error(`Error! Status: ${response.status}`);
-
-      const data = await response.json();
-      if (!data.items || data.items.length === 0) {
-        setRepos([]);
-        setError("No repositories found");
+  
+      if (rawKeywords.length > 6) {
+        setDialogMessage("Keyword limit reached. Please enter no more than 6 keywords.");
         return;
       }
+  
+  
+      const licenseFilters = [];
+      const normalKeywords = [];
+    
+      rawKeywords.forEach((kw) => {
+        if (licenseMap[kw]) {
+          licenseFilters.push(`license:${licenseMap[kw]}`);
+        } else {
+          normalKeywords.push(kw);
+        }
+      });
+    
+      const query = [...normalKeywords, ...licenseFilters].join("+");
+    
+      const apiUrl = `https://api.github.com/search/repositories?q=${query}`;
+    
+      try {
+        const response = await fetch(apiUrl, { headers });
+        if (!response.ok) throw new Error(`Error! Status: ${response.status}`);
+    
+        const data = await response.json();
+        if (!data.items || data.items.length === 0) {
+          setRepos([]);
+          setError("No repositories found");
+          return;
+        }
+    
+        const reposWithDependencies = await Promise.all(
+          data.items.map(async (repo) => {
+            const files = await fetchRepoRootFiles(repo.owner.login, repo.name);
+            let dependencies = [];
+    
+            if (files) {
+              dependencies = await Promise.all(
+                files.map(async (file) => {
+                  const content = await fetchFileContent(
+                    repo.owner.login,
+                    repo.name,
+                    file.path
+                  );
+                  return { name: file.name, content };
+                })
+              );
+            }
+    
+            return { ...repo, dependencies };
+          })
+        );
+    
+        setRepos(reposWithDependencies);
+        setError("");
+      } catch (error) {
+        console.error("Error fetching:", error);
+        setRepos([]);
+        setError("Failed to fetch repositories. Please try again.");
+      }
+    };
+  
 
-      const reposWithDependencies = await Promise.all(
-        data.items.map(async (repo) => {
-          const files = await fetchRepoRootFiles(repo.owner.login, repo.name);
-          let dependencies = [];
-          if (files) {
-            dependencies = await Promise.all(
-              files.map(async (file) => {
-                const content = await fetchFileContent(
-                  repo.owner.login,
-                  repo.name,
-                  file.path
-                );
-                return { name: file.name, content };
-              })
-            );
-          }
-          return { ...repo, dependencies };
-        })
-      );
-
-      setRepos(reposWithDependencies);
-      setError("");
-    } catch (error) {
-      console.error("Error fetching:", error);
-      setRepos([]);
-      setError("Failed to fetch repositories. Please try again.");
-    }
-  };
+  //
 
   return (
     <div
