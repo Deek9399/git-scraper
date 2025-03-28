@@ -1,6 +1,6 @@
-// 📁 RepoSearch.js
 import React, { useState } from "react";
 import RepoTable from "./components/RepoTable";
+import GitHubLogo from "./assets/github-mark-white.svg";
 
 const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
 
@@ -134,9 +134,35 @@ function RepoSearch() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#0D1117", color: "#C9D1D9", padding: "2rem", display: "flex", flexDirection: "column", alignItems: "center", fontFamily: "Segoe UI, sans-serif" }}>
-      <h1 style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>Web Scraper</h1>
-      <p style={{ color: "#8B949E", textAlign: "center", maxWidth: "600px", marginBottom: "1.5rem" }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "#0D1117",
+        color: "#C9D1D9",
+        padding: "2rem",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        fontFamily: "Segoe UI, sans-serif",
+      }}>
+      <h1
+        style={{
+          fontSize: "3rem",
+          marginBottom: "1rem",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.75rem",
+        }}>
+        <img src={GitHubLogo} alt="GitHub Logo" style={{ width: "50px", height: "50px" }} />
+        Web Scraper
+      </h1>
+      <p
+        style={{
+          color: "#8B949E",
+          textAlign: "center",
+          maxWidth: "600px",
+          marginBottom: "1.5rem",
+        }}>
         Search open-source repositories by keyword and see what dependencies they're using.
       </p>
 
