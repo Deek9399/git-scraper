@@ -53,3 +53,60 @@ h2 {
   color: #1e90ff;
   text-decoration: underline;
 }
+.repo-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-family: "Segoe UI", sans-serif;
+  color: #c9d1d9;
+}
+
+.repo-table th,
+.repo-table td {
+  border: 1px solid #30363d;
+  padding: 12px;
+  text-align: left;
+}
+
+.repo-table th {
+  background-color: #161b22;
+  cursor: pointer;
+}
+
+.repo-table th:hover {
+  background-color: #21262d;
+}
+
+.repo-table a {
+  color: #58a6ff;
+  text-decoration: none;
+}
+
+.repo-table a:hover {
+  text-decoration: underline;
+}
+
+.pagination {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pagination button {
+  background-color: #21262d;
+  color: #c9d1d9;
+  border: 1px solid #30363d;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination button:hover {
+  background-color: #30363d;
+}
+
+.pagination span {
+  color: #8b949e;
+}
