@@ -91,7 +91,7 @@ function RepoSearch() {
     }
 
     const keywords = rawKeywords.join("+");
-    const apiUrl = `https://api.github.com/search/repositories?q=${keywords}&per_page=10&page=1`;
+    const apiUrl = `https://api.github.com/search/repositories?q=${keywords}`;
 
     try {
       const response = await fetch(apiUrl, { headers });
