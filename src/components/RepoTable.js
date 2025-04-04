@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "../index.css";
 
 const RepoTable = ({ repos }) => {
-  const navigate = useNavigate();
   const [sortConfig, setSortConfig] = useState({
     key: "updated_at",
     direction: "desc",
@@ -33,8 +31,11 @@ const RepoTable = ({ repos }) => {
     }));
   };
 
-  const handleViewDetails = (repo) => {
-    navigate(`/details/${repo.id}`);
+  const renderArrow = (key) => {
+    if (sortConfig.key === key) {
+      return sortConfig.direction === "asc" ? "▲" : "▼";
+    }
+    return "⇅";
   };
 
   return (
@@ -45,8 +46,9 @@ const RepoTable = ({ repos }) => {
           value={recordsPerPage}
           onChange={(e) => {
             setRecordsPerPage(Number(e.target.value));
-            setCurrentPage(1); // reset to first page
-          }}>
+            setCurrentPage(1); // Reset to first page
+          }}
+        >
           <option value={5}>5</option>
           <option value={10}>10</option>
           <option value={20}>20</option>
@@ -58,30 +60,15 @@ const RepoTable = ({ repos }) => {
         <thead>
           <tr>
             <th onClick={() => handleSort("name")}>
-              Repository Name{" "}
-              {sortConfig.key === "name"
-                ? sortConfig.direction === "asc"
-                  ? "▲"
-                  : "▼"
-                : ""}
+              Repository Name {renderArrow("name")}
             </th>
             <th>Description</th>
             <th onClick={() => handleSort("updated_at")}>
-              Last Modified{" "}
-              {sortConfig.key === "updated_at"
-                ? sortConfig.direction === "asc"
-                  ? "▲"
-                  : "▼"
-                : ""}
+              Last Modified {renderArrow("updated_at")}
             </th>
             <th>License</th>
             <th onClick={() => handleSort("forks_count")}>
-              Forks{" "}
-              {sortConfig.key === "forks_count"
-                ? sortConfig.direction === "asc"
-                  ? "▲"
-                  : "▼"
-                : ""}
+              Forks {renderArrow("forks_count")}
             </th>
             <th>View</th>
           </tr>
@@ -93,7 +80,8 @@ const RepoTable = ({ repos }) => {
                 <a
                   href={repo.html_url}
                   target="_blank"
-                  rel="noopener noreferrer">
+                  rel="noopener noreferrer"
+                >
                   {repo.name}
                 </a>
               </td>
@@ -102,27 +90,35 @@ const RepoTable = ({ repos }) => {
               <td>{repo.license?.name || "No license"}</td>
               <td>{repo.forks_count}</td>
               <td>
-                <button onClick={() => handleViewDetails(repo)}>
+                <a
+                  href={repo.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   View Details
-                </button>
+                </a>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <div className="pagination">
+      <div className="pagination" style={{ marginTop: "1rem", display: "flex", justifyContent: "center", gap: "1rem" }}>
         <button
           onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-          disabled={currentPage === 1}>
+          disabled={currentPage === 1}
+        >
           ⬅ Prev
         </button>
         <span>
           Page {currentPage} of {totalPages}
         </span>
         <button
-          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-          disabled={currentPage === totalPages}>
+          onClick={() =>
+            setCurrentPage((p) => Math.min(p + 1, totalPages))
+          }
+          disabled={currentPage === totalPages}
+        >
           Next ➡
         </button>
       </div>
