@@ -34,7 +34,8 @@ const RepoTable = ({ repos }) => {
   };
 
   const handleViewDetails = (repo) => {
-    navigate(`/details/${repo.id}`);
+    navigate(`/details/${repo.id}`, { state: { repo } });
+
   };
 
   return (
