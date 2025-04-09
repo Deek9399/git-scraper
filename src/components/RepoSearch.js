@@ -4,6 +4,18 @@ import GitHubLogo from "../assets/github-mark-white.svg";
 
 const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
 
+const licenseMap = {
+  mit: "mit",
+  gnu: "gpl-3.0",
+  gpl: "gpl-3.0",
+  apache: "apache-2.0",
+  bsd: "bsd-2-clause",
+  unlicense: "unlicense",
+  lgpl: "lgpl-3.0",
+  mozilla: "mpl-2.0",
+  eclipse: "epl-2.0",
+};
+
 const headers = {
   Authorization: `token ${GITHUB_TOKEN}`,
   Accept: "application/vnd.github.v3+json",
@@ -14,6 +26,7 @@ function RepoSearch() {
   const [repos, setRepos] = useState([]);
   const [error, setError] = useState("");
   const [dialogMessage, setDialogMessage] = useState("");
+  const [loading, setLoading] = useState(false); // Add loading state
 
   const fetchRepoRootFiles = async (owner, repo) => {
     const response = await fetch(
@@ -82,7 +95,7 @@ function RepoSearch() {
 
     const rawKeywords = searchTerm
       .split(",")
-      .map((kw) => kw.trim())
+      .map((kw) => kw.trim().toLowerCase())
       .filter((kw) => kw.length > 0);
 
     if (rawKeywords.length > 6) {
@@ -90,22 +103,53 @@ function RepoSearch() {
       return;
     }
 
-    const keywords = rawKeywords.join("+");
-    const apiUrl = `https://api.github.com/search/repositories?q=${keywords}`;
+    const licenseFilters = new Set();
+    const normalKeywords = [];
+
+    rawKeywords.forEach((kw) => {
+      const license = licenseMap[kw];
+      if (license) {
+        licenseFilters.add(license);
+      } else {
+        normalKeywords.push(kw);
+      }
+    });
+
+    const queryParts = ["language:C", ...normalKeywords];
+
+    if (licenseFilters.size === 1) {
+      queryParts.push(`license:${Array.from(licenseFilters)[0]}`);
+    }
+
+    const query = queryParts.join("+");
+    const apiUrl = `https://api.github.com/search/repositories?q=${query}`;
+
+    setLoading(true);
+    setRepos([]);
+    setError("");
+    setDialogMessage("");
 
     try {
       const response = await fetch(apiUrl, { headers });
       if (!response.ok) throw new Error(`Error! Status: ${response.status}`);
 
       const data = await response.json();
-      if (!data.items || data.items.length === 0) {
-        setRepos([]);
+      let items = data.items || [];
+
+      if (licenseFilters.size > 0) {
+        items = items.filter((repo) => {
+          const spdx = repo.license?.spdx_id?.toLowerCase();
+          return spdx && licenseFilters.has(spdx);
+        });
+      }
+
+      if (items.length === 0) {
         setError("No repositories found");
         return;
       }
 
       const reposWithDependencies = await Promise.all(
-        data.items.map(async (repo) => {
+        items.map(async (repo) => {
           const files = await fetchRepoRootFiles(repo.owner.login, repo.name);
           let dependencies = [];
           if (files) {
@@ -125,11 +169,12 @@ function RepoSearch() {
       );
 
       setRepos(reposWithDependencies);
-      setError("");
     } catch (error) {
       console.error("Error fetching:", error);
       setRepos([]);
       setError("Failed to fetch repositories. Please try again.");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -176,7 +221,7 @@ function RepoSearch() {
         <input
           style={{ padding: "0.6rem 1rem", fontSize: "1rem", borderRadius: "6px", border: "1px solid #30363D", backgroundColor: "#161B22", color: "#C9D1D9", outline: "none", minWidth: "320px" }}
           type="text"
-          placeholder="Search for a repository..."
+          placeholder="Search for a repository... (e.g. mit, sorting)"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -188,11 +233,18 @@ function RepoSearch() {
         </button>
       </form>
 
-      {error && <p>{error}</p>}
-      {repos.length > 0 && <RepoTable repos={repos} />}
+      {/* 🔄 Loading Spinner */}
+      {loading && (
+        <div style={{ margin: "2rem 0", textAlign: "center" }}>
+          <div className="spinner" />
+          <p style={{ color: "#8B949E", marginTop: "1rem" }}>Fetching repositories...</p>
+        </div>
+      )}
+
+      {error && <p style={{ color: "#F85149" }}>{error}</p>}
+      {!loading && repos.length > 0 && <RepoTable repos={repos} />}
     </div>
   );
 }
 
 export default RepoSearch;
-
