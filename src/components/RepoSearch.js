@@ -4,6 +4,19 @@ import GitHubLogo from "../assets/github-mark-white.svg";
 
 const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
 
+const licenseMap = {
+  mit: "mit",
+  gnu: "gpl-3.0",
+  gpl: "gpl-3.0",
+  apache: "apache-2.0",
+  bsd: "bsd-2-clause",
+  unlicense: "unlicense",
+  lgpl: "lgpl-3.0",
+  mozilla: "mpl-2.0",
+  eclipse: "epl-2.0",
+};
+
+
 const headers = {
   Authorization: `token ${GITHUB_TOKEN}`,
   Accept: "application/vnd.github.v3+json",
@@ -79,33 +92,61 @@ function RepoSearch() {
       setDialogMessage("Please enter search keywords");
       return;
     }
-
+  
     const rawKeywords = searchTerm
       .split(",")
-      .map((kw) => kw.trim())
+      .map((kw) => kw.trim().toLowerCase())
       .filter((kw) => kw.length > 0);
-
+  
     if (rawKeywords.length > 6) {
       setDialogMessage("Keyword limit reached. Please enter no more than 6 keywords.");
       return;
     }
-
-    const keywords = rawKeywords.join("+");
-    const apiUrl = `https://api.github.com/search/repositories?q=${keywords}`;
-
+  
+    const licenseFilters = new Set();
+    const normalKeywords = [];
+  
+    rawKeywords.forEach((kw) => {
+      const license = licenseMap[kw];
+      if (license) {
+        licenseFilters.add(license);
+      } else {
+        normalKeywords.push(kw);
+      }
+    });
+  
+    const queryParts = ["language:C", ...normalKeywords];
+  
+    if (licenseFilters.size === 1) {
+      queryParts.push(`license:${Array.from(licenseFilters)[0]}`);
+    }
+  
+    const query = queryParts.join("+");
+    const apiUrl = `https://api.github.com/search/repositories?q=${query}`;
+  
     try {
       const response = await fetch(apiUrl, { headers });
       if (!response.ok) throw new Error(`Error! Status: ${response.status}`);
-
+  
       const data = await response.json();
-      if (!data.items || data.items.length === 0) {
+      let items = data.items || [];
+  
+      // If multiple license filters, manually filter client-side
+      if (licenseFilters.size > 0) {
+        items = items.filter((repo) => {
+          const spdx = repo.license?.spdx_id?.toLowerCase();
+          return spdx && licenseFilters.has(spdx);
+        });
+      }
+  
+      if (items.length === 0) {
         setRepos([]);
         setError("No repositories found");
         return;
       }
-
+  
       const reposWithDependencies = await Promise.all(
-        data.items.map(async (repo) => {
+        items.map(async (repo) => {
           const files = await fetchRepoRootFiles(repo.owner.login, repo.name);
           let dependencies = [];
           if (files) {
@@ -123,7 +164,7 @@ function RepoSearch() {
           return { ...repo, dependencies };
         })
       );
-
+  
       setRepos(reposWithDependencies);
       setError("");
     } catch (error) {
@@ -132,6 +173,7 @@ function RepoSearch() {
       setError("Failed to fetch repositories. Please try again.");
     }
   };
+  
 
   return (
     <div
