@@ -1,7 +1,7 @@
 import React from "react";
 import GitHubProjects from "./fetch-projects";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import RepoSearch from "./RepoSearch";
+import RepoSearch from "./components/RepoSearch";
 import RepoDetails from "./components/RepoDetails";
 
 function App() {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import RepoTable from "./components/RepoTable";
-import GitHubLogo from "./assets/github-mark-white.svg";
+import RepoTable from "./RepoTable";
+import GitHubLogo from "../assets/github-mark-white.svg";
 
 const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
 
