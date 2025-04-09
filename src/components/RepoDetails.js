@@ -1,5 +1,11 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import DescriptionSection from "./DescriptionSection";
+import ContributorsSection from "./ContributorsSection";
+import LicensingSection from "./LicensingSection";
+import PluggabilitySection from "./PluggabilitySection";
+import SupportSection from "./SupportSection";
+import DependencyGraphSection from "./DependencyGraphSection";
 
 const RepoDetails = () => {
   const { state } = useLocation();
@@ -8,7 +14,11 @@ const RepoDetails = () => {
   const [activeSection, setActiveSection] = useState("description");
 
   if (!repo) {
-    return <div style={{ padding: "2rem", color: "#ccc" }}>No repository data available.</div>;
+    return (
+      <div style={{ padding: "2rem", color: "#ccc" }}>
+        No repository data available.
+      </div>
+    );
   }
 
   const linkStyle = {
@@ -20,79 +30,39 @@ const RepoDetails = () => {
   const sections = {
     description: {
       label: "Description",
-      content: (
-        <div>
-          <h3>{repo.full_name}</h3>
-          <p>{repo.description || "No description provided."}</p>
-          <p><strong>Language:</strong> {repo.language || "N/A"}</p>
-          <p><strong>Visibility:</strong> {repo.private ? "Private" : "Public"}</p>
-          <p><strong>Stars:</strong> {repo.stargazers_count}</p>
-          <p><strong>Watchers:</strong> {repo.watchers_count}</p>
-          <p><strong>Forks:</strong> {repo.forks_count}</p>
-          <p><strong>Created At:</strong> {new Date(repo.created_at).toLocaleString()}</p>
-          <p><strong>Last Updated:</strong> {new Date(repo.updated_at).toLocaleString()}</p>
-        </div>
-      ),
+      content: <DescriptionSection repo={repo} />,
     },
     contributors: {
       label: "Contributors",
-      content: (
-        <div>
-          <p>To view contributors, check GitHub:</p>
-          <a
-            href={`${repo.html_url}/graphs/contributors`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={linkStyle}
-          >
-            View Contributors
-          </a>
-        </div>
-      ),
+      content: <ContributorsSection repo={repo} />,
     },
     licensing: {
       label: "Licensing",
+      content: <LicensingSection repo={repo} />,
+    },
+    extensibility: {
+      label: "Extension",
       content: (
         <div>
-          <p><strong>License Name:</strong> {repo.license?.name || "No license info available."}</p>
-          <p><strong>SPDX ID:</strong> {repo.license?.spdx_id || "N/A"}</p>
+          <p>
+            {repo.topics?.length
+              ? repo.topics.join(", ")
+              : "No keywords or topics provided."}
+          </p>
         </div>
       ),
     },
-    extensibility: {
-      label: "Extension and Pluggability",
-      content: (
-        <div>
-          <p>{repo.topics?.length ? repo.topics.join(", ") : "No keywords or topics provided."}</p>
-        </div>
-      ),
+    pluggability: {
+      label: "Pluggability",
+      content: <PluggabilitySection repo={repo} />,
     },
     support: {
       label: "Support",
-      content: (
-        <div>
-          <p><strong>Issues Enabled:</strong> {repo.has_issues ? "Yes" : "No"}</p>
-          <p><strong>Open Issues:</strong> {repo.open_issues_count}</p>
-          <p><strong>Has Projects:</strong> {repo.has_projects ? "Yes" : "No"}</p>
-          <p><strong>Has Wiki:</strong> {repo.has_wiki ? "Yes" : "No"}</p>
-        </div>
-      ),
+      content: <SupportSection repo={repo} />,
     },
     dependencyGraph: {
       label: "Dependency Graph",
-      content: (
-        <div>
-          <p>You can view this repo's dependencies directly on GitHub:</p>
-          <a
-            href={`${repo.html_url}/network/dependencies`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={linkStyle}
-          >
-            View Dependency Graph
-          </a>
-        </div>
-      ),
+      content: <DependencyGraphSection repo={repo} />,
     },
   };
 
@@ -156,8 +126,7 @@ const RepoDetails = () => {
           <div
             key={key}
             style={styles.sidebarItem(key === activeSection)}
-            onClick={() => setActiveSection(key)}
-          >
+            onClick={() => setActiveSection(key)}>
             {section.label}
           </div>
         ))}
@@ -165,7 +134,9 @@ const RepoDetails = () => {
 
       <main style={styles.contentArea}>
         <h2 style={styles.sectionTitle}>{sections[activeSection].label}</h2>
-        <div style={styles.sectionContent}>{sections[activeSection].content}</div>
+        <div style={styles.sectionContent}>
+          {sections[activeSection].content}
+        </div>
       </main>
     </div>
   );
