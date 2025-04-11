@@ -108,7 +108,7 @@ const DependencyGraphSection = ({ repo }) => {
       <h4 style={{ color: "#C9D1D9", marginBottom: "0.5rem" }}>
         Dependencies (npm + GitHub Actions)
       </h4>
-
+  
       {loading ? (
         <p>Loading dependencies...</p>
       ) : dependencies.length === 0 ? (
@@ -126,11 +126,40 @@ const DependencyGraphSection = ({ repo }) => {
       ) : (
         <ul style={{ fontSize: "14px", color: "#8B949E" }}>
           {dependencies.map((dep, i) => (
-            <li key={i}>{dep}</li>
+            <li key={i}>{typeof dep === "string" ? dep : `${dep.name} - ${dep.version}`}</li>
           ))}
         </ul>
       )}
-
+  
+      <button
+        onClick={async () => {
+          setLoading(true);
+          try {
+            const res = await fetch(
+              `http://localhost:3000/scrape-dependencies/${repo.owner.login}/${repo.name}`
+            );
+            const data = await res.json();
+            setDependencies(data.dependencies);
+          } catch (err) {
+            console.error("❌ Failed to fetch deep dependencies", err);
+            setDependencies(["❌ Failed to fetch deep dependencies"]);
+          } finally {
+            setLoading(false);
+          }
+        }}
+        style={{
+          marginTop: "1rem",
+          padding: "0.5rem 1rem",
+          backgroundColor: "#238636",
+          color: "#fff",
+          border: "none",
+          borderRadius: "6px",
+          cursor: "pointer",
+        }}
+      >
+        🔍 Run Deep Scan (GitHub Dependency Graph)
+      </button>
+  
       <a
         href={`${repo.html_url}/network/dependencies`}
         target="_blank"
@@ -147,6 +176,7 @@ const DependencyGraphSection = ({ repo }) => {
       </a>
     </div>
   );
+  
 };
 
 export default DependencyGraphSection;
