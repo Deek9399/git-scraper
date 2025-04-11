@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import DescriptionSection from "./DescriptionSection";
-import ContributorsSection from "./ContributorsSection";
-import LicensingSection from "./LicensingSection";
-import PluggabilitySection from "./PluggabilitySection";
+import DescriptionSection from "./repoDetails/DescriptionSection";
+import ContributorsSection from "./repoDetails/ContributorsSection";
+import LicensingSection from "./repoDetails/LicensingSection";
+import PluggabilitySection from "./repoDetails/PluggabilitySection";
 import SupportSection from "./SupportSection";
-import DependencyGraphSection from "./DependencyGraphSection";
+import DependencyGraphSection from "./repoDetails/DependencyGraphSection";
 
 const RepoDetails = () => {
   const { state } = useLocation();
