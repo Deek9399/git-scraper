@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import Tree from "react-d3-tree";
+import html2canvas from "html2canvas";
 
 const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
 
@@ -60,6 +61,7 @@ const DependencyGraphSection = ({ repo }) => {
   const treeContainer = useRef(null);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [selectedNode, setSelectedNode] = useState(null);
+  const treeWrapperRef = useRef(null);
 
   const dependencyData = {
     name: "example-org/my-c-project",
@@ -281,6 +283,20 @@ const DependencyGraphSection = ({ repo }) => {
 
   //   fetchDependencies();
   // }, [repo]);
+
+  const handleDownload = async () => {
+    if (!treeWrapperRef.current) return;
+
+    const canvas = await html2canvas(treeWrapperRef.current, {
+      backgroundColor: "#ffffff",
+      useCORS: true,
+    });
+
+    const link = document.createElement("a");
+    link.download = "dependency-graph.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  };
   useEffect(() => {
     const dimensions = treeContainer.current.getBoundingClientRect();
     setTranslate({
@@ -288,6 +304,7 @@ const DependencyGraphSection = ({ repo }) => {
       y: dimensions.height / 8,
     });
   }, []);
+
   return (
     // <div style={{ marginTop: "1rem" }}>
     //   <h4 style={{ color: "#C9D1D9", marginBottom: "0.5rem" }}>
@@ -331,12 +348,30 @@ const DependencyGraphSection = ({ repo }) => {
     //   </a>
     // </div>
     <div>
+      <div style={{ marginBottom: "1rem", textAlign: "right" }}>
+        <button
+          onClick={handleDownload}
+          style={{
+            padding: "0.5rem 1rem",
+            backgroundColor: "#0D3B66",
+            color: "white",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+          }}>
+          Download Graph as PNG
+        </button>
+      </div>
       <div
         id="treeWrapper"
-        s
         style={{ width: "70vw", height: "80vh", backgroundColor: "white" }}
-        ref={treeContainer}>
-        {/* <Tree
+        ref={treeWrapperRef}>
+        <div
+          id="treeWrapper"
+          s
+          style={{ width: "70vw", height: "80vh", backgroundColor: "white" }}
+          ref={treeContainer}>
+          {/* <Tree
           data={dependencyData}
           translate={translate}
           orientation="vertical"
@@ -345,26 +380,26 @@ const DependencyGraphSection = ({ repo }) => {
           onNodeClick={(node) => setSelectedNode(node.data)}
           pathFunc="step"
         /> */}
-        <Tree
-          data={[sampleTree]}
-          initialDepth={Infinity}
-          collapsible={false}
-          translate={translate}
-          orientation="vertical"
-          renderCustomNodeElement={renderNodeLabel}
-          onNodeClick={(node) => setSelectedNode(node.data)}
-          pathFunc="diagonal"
-          pathClassFunc={() => "custom-link"}
-          separation={{ siblings: 1.5, nonSiblings: 2 }}
-          styles={{
-            links: {
-              stroke: "#4dabf7 !important",
-              strokeWidth: 2,
-            },
-          }}
-        />
+          <Tree
+            data={[sampleTree]}
+            initialDepth={Infinity}
+            collapsible={false}
+            translate={translate}
+            orientation="vertical"
+            renderCustomNodeElement={renderNodeLabel}
+            onNodeClick={(node) => setSelectedNode(node.data)}
+            pathFunc="diagonal"
+            pathClassFunc={() => "custom-link"}
+            separation={{ siblings: 1.5, nonSiblings: 2 }}
+            styles={{
+              links: {
+                stroke: "#4dabf7 !important",
+                strokeWidth: 2,
+              },
+            }}
+          />
+        </div>
       </div>
-
       {selectedNode && (
         <div className="p-4 shadow rounded-xl bg-white w-80 text-sm leading-6">
           <h3 className="font-bold text-lg mb-2">{selectedNode.name}</h3>
