@@ -7,6 +7,8 @@ import PluggabilitySection from "./PluggabilitySection";
 import SupportSection from "./SupportSection";
 import DependencyGraphSection from "./DependencyGraphSection";
 
+
+
 const RepoDetails = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
