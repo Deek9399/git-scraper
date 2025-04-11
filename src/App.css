@@ -1,3 +1,8 @@
 * {
   margin: 0;
 }
+
+.custom-link {
+  stroke: #4dabf7; /* light blue */
+  stroke-width: 2px;
+}
