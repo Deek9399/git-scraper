@@ -1,4 +1,19 @@
+
 const puppeteer = require('puppeteer');
+const { scrapeFullTree } = require("../scrapers/scrapeRecursive");
+
+const { buildDependencyTree } = require('../utils/dependencyTreeBuilder');
+
+// Dummy metadata generator for enrichment
+function getMetadata(name) {
+  const licenses = ["MIT", "GPL", "LGPL", "Apache 2.0"];
+  return {
+    description: `Auto-generated description for ${name}`,
+    license: licenses[Math.floor(Math.random() * licenses.length)],
+    lastModified: "2025-01-01",
+    forks: Math.floor(Math.random() * 100)
+  };
+}
 
 const getDependencies = async (req, res) => {
   const { owner, repoName } = req.params;
@@ -6,17 +21,17 @@ const getDependencies = async (req, res) => {
     return res.status(400).json({ error: "Owner and repoName are required" });
   }
 
-  const BASE_URL = `https://github.com/${owner}/${repoName}/network/dependencies`;
-
   try {
-    const all_dependencies = await scrapeDependencies(BASE_URL);
-    const dependencies = removeDuplicates(all_dependencies);
-    res.json({ totalCount: dependencies.length, dependencies });
+    const tree = await scrapeFullTree(owner, repoName);
+    res.json(tree);
   } catch (error) {
     console.error("Error scraping dependencies:", error);
     res.status(500).json({ error: "Failed to scrape dependencies" });
   }
 };
+
+module.exports = { getDependencies };
+
 
 async function scrapeDependencies(BASE_URL) {
   const browser = await puppeteer.launch({ headless: true });
@@ -70,12 +85,6 @@ async function checkForNextPage(page) {
 async function goToNextPage(page) {
   await page.click(".next_page");
   await page.waitForNavigation({ waitUntil: "domcontentloaded" });
-}
-
-function removeDuplicates(dependencies) {
-  return dependencies.filter((dep, index, self) =>
-    index === self.findIndex(d => d.name === dep.name)
-  );
 }
 
 module.exports = { getDependencies };
