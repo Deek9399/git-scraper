@@ -25,12 +25,13 @@ const getDependencies = async (req, res) => {
 
   try {
     const tree = await scrapeFullTree(owner, repoName);
-    res.json(tree);
+    res.json(tree); // already the root tree object
   } catch (error) {
     console.error("Error scraping dependencies:", error);
     res.status(500).json({ error: "Failed to scrape dependencies" });
   }
 };
+
 
 module.exports = { getDependencies };
 

@@ -79,18 +79,20 @@ async function getDependencies(url, depth = 1, maxDepth = 3, visited = new Set()
 
 
 async function scrapeFullTree(owner, repoName) {
-  const url = `https://github.com/${owner}/${repoName}/network/dependencies`;
+  const repoFullName = `${owner}/${repoName}`;
+  const url = `https://github.com/${repoFullName}/network/dependencies`;
   const children = await getDependencies(url, 1, 3);
-  const mainMeta = await getMetadata("Main Program");
+  const mainMeta = await getMetadata(repoFullName);
 
   const tree = {
     ...mainMeta,
-    name: "Main Program", // this line fixes the missing name issue
+    name: repoName,
     children: Array.isArray(children) ? children : [],
     beyondDepthCount: Array.isArray(children) ? 0 : children.beyondDepthCount || 0
   };
 
-  return { name: "root", children: [tree] };
+  return tree; // No need to wrap in { name: "root", children: [tree] }
 }
+
 
 module.exports = { scrapeFullTree };
