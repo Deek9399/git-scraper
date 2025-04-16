@@ -1,6 +1,5 @@
-
 const puppeteer = require("puppeteer");
-const { buildDependencyTree } = require("../utils/dependencyTreeBuilder");
+// const { buildDependencyTree } = require("../utils/dependencyTreeBuilder");
 
 async function getMetadata(name) {
   const licenses = ["MIT", "Apache 2.0", "GPL", "BSD"];
@@ -13,8 +12,12 @@ async function getMetadata(name) {
 }
 
 async function getDependencies(url, depth = 1, maxDepth = 3, visited = new Set()) {
-  if (depth > maxDepth || visited.has(url)) return [];
+  if (visited.has(url)) {
+    console.log(`[🛑] Skipping already visited: ${url}`);
+    return { beyondDepthCount: 0 };
+  }
 
+  console.log(`🧭 [Depth ${depth}] Visiting: ${url}`);
   visited.add(url);
 
   const browser = await puppeteer.launch({ headless: "new" });
@@ -37,17 +40,43 @@ async function getDependencies(url, depth = 1, maxDepth = 3, visited = new Set()
     }).filter(Boolean);
   });
 
+  console.log(`🔍 Found ${deps.length} dependencies at depth ${depth}`);
   await browser.close();
 
-  const enrichedDeps = [];
-  for (const dep of deps) {
-    const meta = await getMetadata(dep.name);
-    const subDeps = await getDependencies(dep.url + "/network/dependencies", depth + 1, maxDepth, visited);
-    enrichedDeps.push({ ...dep, ...meta, children: subDeps });
+  // ✅ If we're beyond the depth limit, return a flat count — no children
+  if (depth > maxDepth) {
+    return { beyondDepthCount: deps.length };
   }
 
-  return enrichedDeps;
+  const enrichedDeps = [];
+  let totalBeyond = 0;
+
+  for (const dep of deps) {
+    console.log(`→ Scraping child dependency: ${dep.name}`);
+    const meta = await getMetadata(dep.name);
+    const subDeps = await getDependencies(dep.url + "/network/dependencies", depth + 1, maxDepth, visited);
+
+    let children = [];
+    let beyondDepthCount = 0;
+
+    if (Array.isArray(subDeps)) {
+      children = subDeps;
+    } else {
+      beyondDepthCount = subDeps.beyondDepthCount || 0;
+      totalBeyond += beyondDepthCount;
+    }
+
+    enrichedDeps.push({
+      ...dep,
+      ...meta,
+      children,
+      beyondDepthCount
+    });
+  }
+
+  return enrichedDeps.length ? enrichedDeps : { beyondDepthCount: totalBeyond };
 }
+
 
 async function scrapeFullTree(owner, repoName) {
   const url = `https://github.com/${owner}/${repoName}/network/dependencies`;
@@ -55,9 +84,10 @@ async function scrapeFullTree(owner, repoName) {
   const mainMeta = await getMetadata("Main Program");
 
   const tree = {
-    name: "Main Program",
     ...mainMeta,
-    children
+    name: "Main Program", // this line fixes the missing name issue
+    children: Array.isArray(children) ? children : [],
+    beyondDepthCount: Array.isArray(children) ? 0 : children.beyondDepthCount || 0
   };
 
   return { name: "root", children: [tree] };

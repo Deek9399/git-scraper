@@ -2,7 +2,9 @@
 const puppeteer = require('puppeteer');
 const { scrapeFullTree } = require("../scrapers/scrapeRecursive");
 
-const { buildDependencyTree } = require('../utils/dependencyTreeBuilder');
+const { buildDependencyTree } = require("../scrapers/utils/dependencyTreeBuilder");
+
+
 
 // Dummy metadata generator for enrichment
 function getMetadata(name) {
