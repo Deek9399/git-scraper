@@ -7,6 +7,27 @@ import PluggabilitySection from "./repoDetails/PluggabilitySection";
 import SupportSection from "./SupportSection";
 import DependencyGraphSection from "./repoDetails/DependencyGraphSection";
 
+//Extensibility Implementation
+function calculateExtensibilityScore(repo) {
+  let score = 0;
+  if (repo.stargazers_count > 5000) score += 20;
+  else if (repo.stargazers_count > 1000) score += 10;
+
+  if (repo.forks_count > 1000) score += 20;
+  else if (repo.forks_count > 300) score += 10;
+  if (repo.watchers_count > 500) score += 10;
+
+  const permissiveLicenses = ["MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause"];
+  if (repo.license && permissiveLicenses.includes(repo.license.spdx_id)) {
+    score += 15;
+  }
+  if (repo.dependencies && repo.dependencies.length > 0) {
+    score += 25;
+  }
+
+  return Math.min(score, 100);
+}
+
 const RepoDetails = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -20,6 +41,8 @@ const RepoDetails = () => {
       </div>
     );
   }
+
+  const extensibilityScore = calculateExtensibilityScore(repo); //calculate extensibility
 
   const linkStyle = {
     color: "#4dabf7",
@@ -41,14 +64,17 @@ const RepoDetails = () => {
       content: <LicensingSection repo={repo} />,
     },
     extensibility: {
-      label: "Extension",
+      label: "Extensibility",
       content: (
         <div>
-          <p>
-            {repo.topics?.length
-              ? repo.topics.join(", ")
-              : "No keywords or topics provided."}
-          </p>
+          <h3>Extensibility Score: {extensibilityScore}/100</h3>
+          <ul style={{ listStyle: 'none', padding: 0 }}>
+            <li>Stars ({repo.stargazers_count}): {repo.stargazers_count > 5000 ? '+20' : repo.stargazers_count > 1000 ? '+10' : '+0'}</li>
+            <li>Forks ({repo.forks_count}): {repo.forks_count > 1000 ? '+20' : repo.forks_count > 300 ? '+10' : '+0'}</li>
+            <li>Watchers ({repo.watchers_count}): {repo.watchers_count > 500 ? '+10' : '+0'}</li>
+            <li>License ({repo.license?.spdx_id || 'None'}): {repo.license && ["MIT","Apache-2.0","BSD-2-Clause","BSD-3-Clause"].includes(repo.license.spdx_id) ? '+15' : '+0'}</li>
+            <li>Dependencies ({repo.dependencies?.length || 0}): {repo.dependencies && repo.dependencies.length > 0 ? '+25' : '+0'}</li>
+          </ul>
         </div>
       ),
     },
