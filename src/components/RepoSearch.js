@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import RepoTable from "./RepoTable";
 import GitHubLogo from "../assets/github-mark-white.svg";
 
@@ -65,7 +65,10 @@ function RepoSearch() {
     if (filename.toLowerCase() === "package.json") {
       try {
         const json = JSON.parse(content);
-        return Object.keys(json.dependencies || {}).join(", ") || "No dependencies found";
+        return (
+          Object.keys(json.dependencies || {}).join(", ") ||
+          "No dependencies found"
+        );
       } catch {
         return "Error parsing package.json";
       }
@@ -79,10 +82,18 @@ function RepoSearch() {
       );
     }
     if (filename.toLowerCase() === "cmakelists.txt") {
-      return content.match(/find_package\((.*?)\)/gi)?.join(", ") || "No dependencies found";
+      return (
+        content.match(/find_package\((.*?)\)/gi)?.join(", ") ||
+        "No dependencies found"
+      );
     }
     if (filename.toLowerCase() === "makefile") {
-      return content.match(/-l(\w+)/g)?.map((lib) => lib.replace("-l", "")).join(", ") || "No dependencies found";
+      return (
+        content
+          .match(/-l(\w+)/g)
+          ?.map((lib) => lib.replace("-l", ""))
+          .join(", ") || "No dependencies found"
+      );
     }
     return "Unsupported dependency format";
   };
@@ -99,7 +110,9 @@ function RepoSearch() {
       .filter((kw) => kw.length > 0);
 
     if (rawKeywords.length > 6) {
-      setDialogMessage("Keyword limit reached. Please enter no more than 6 keywords.");
+      setDialogMessage(
+        "Keyword limit reached. Please enter no more than 6 keywords."
+      );
       return;
     }
 
@@ -169,6 +182,11 @@ function RepoSearch() {
       );
 
       setRepos(reposWithDependencies);
+      sessionStorage.setItem(
+        "cachedRepos",
+        JSON.stringify(reposWithDependencies)
+      );
+      sessionStorage.setItem("cachedSearchTerm", searchTerm);
     } catch (error) {
       console.error("Error fetching:", error);
       setRepos([]);
@@ -177,6 +195,14 @@ function RepoSearch() {
       setLoading(false); // Stop loading
     }
   };
+
+  useEffect(() => {
+    const cachedRepos = sessionStorage.getItem("cachedRepos");
+    const cachedSearchTerm = sessionStorage.getItem("cachedSearchTerm");
+
+    if (cachedRepos) setRepos(JSON.parse(cachedRepos));
+    if (cachedSearchTerm) setSearchTerm(cachedSearchTerm);
+  }, []);
 
   return (
     <div
@@ -198,7 +224,11 @@ function RepoSearch() {
           alignItems: "center",
           gap: "0.75rem",
         }}>
-        <img src={GitHubLogo} alt="GitHub Logo" style={{ width: "50px", height: "50px" }} />
+        <img
+          src={GitHubLogo}
+          alt="GitHub Logo"
+          style={{ width: "50px", height: "50px" }}
+        />
         Web Scraper
       </h1>
       <p
@@ -208,27 +238,60 @@ function RepoSearch() {
           maxWidth: "600px",
           marginBottom: "1.5rem",
         }}>
-        Search open-source repositories by keyword and see what dependencies they're using.
+        Search open-source repositories by keyword and see what dependencies
+        they're using.
       </p>
 
       {dialogMessage && (
-        <div style={{ backgroundColor: "#21262D", border: "1px solid #30363D", color: "#F85149", padding: "0.75rem 1.25rem", borderRadius: "6px", marginBottom: "1rem", maxWidth: "600px", textAlign: "center" }}>
+        <div
+          style={{
+            backgroundColor: "#21262D",
+            border: "1px solid #30363D",
+            color: "#F85149",
+            padding: "0.75rem 1.25rem",
+            borderRadius: "6px",
+            marginBottom: "1rem",
+            maxWidth: "600px",
+            textAlign: "center",
+          }}>
           {dialogMessage}
         </div>
       )}
 
-      <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }} style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem" }}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSearch();
+        }}
+        style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem" }}>
         <input
-          style={{ padding: "0.6rem 1rem", fontSize: "1rem", borderRadius: "6px", border: "1px solid #30363D", backgroundColor: "#161B22", color: "#C9D1D9", outline: "none", minWidth: "320px" }}
+          style={{
+            padding: "0.6rem 1rem",
+            fontSize: "1rem",
+            borderRadius: "6px",
+            border: "1px solid #30363D",
+            backgroundColor: "#161B22",
+            color: "#C9D1D9",
+            outline: "none",
+            minWidth: "320px",
+          }}
           type="text"
           placeholder="Search for a repository... (e.g. mit, sorting)"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <button
-          style={{ padding: "0.6rem 1.2rem", fontSize: "1rem", backgroundColor: "#238636", color: "#ffffff", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "bold" }}
-          type="submit"
-        >
+          style={{
+            padding: "0.6rem 1.2rem",
+            fontSize: "1rem",
+            backgroundColor: "#238636",
+            color: "#ffffff",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
+          type="submit">
           Search
         </button>
       </form>
@@ -237,7 +300,9 @@ function RepoSearch() {
       {loading && (
         <div style={{ margin: "2rem 0", textAlign: "center" }}>
           <div className="spinner" />
-          <p style={{ color: "#8B949E", marginTop: "1rem" }}>Fetching repositories...</p>
+          <p style={{ color: "#8B949E", marginTop: "1rem" }}>
+            Fetching repositories...
+          </p>
         </div>
       )}
 

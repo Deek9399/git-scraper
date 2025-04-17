@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import DescriptionSection from "./DescriptionSection";
 import ContributorsSection from "./ContributorsSection";
@@ -7,22 +7,23 @@ import PluggabilitySection from "./PluggabilitySection";
 import SupportSection from "./SupportSection";
 import DependencyGraphSection from "./DependencyGraphSection";
 
-
-
 const RepoDetails = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
+  const [dependencies, setDependencies] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState();
   const repo = state?.repo;
   const [activeSection, setActiveSection] = useState("description");
 
-  if (!repo) {
-    return (
-      <div style={{ padding: "2rem", color: "#ccc" }}>
-        No repository data available.
-      </div>
-    );
-  }
-
+  // if (!repo) {
+  //   return (
+  //     <div style={{ padding: "2rem", color: "#ccc" }}>
+  //       No repository data available.
+  //     </div>
+  //   );
+  // }
+  console.log("11111111122222222", loading);
   const linkStyle = {
     color: "#4dabf7",
     textDecoration: "underline",
@@ -64,7 +65,13 @@ const RepoDetails = () => {
     },
     dependencyGraph: {
       label: "Dependency Graph",
-      content: <DependencyGraphSection repo={repo} />,
+      content: (
+        <DependencyGraphSection
+          repo={repo}
+          dependencies={dependencies}
+          loading={loading}
+        />
+      ),
     },
   };
 
@@ -116,6 +123,33 @@ const RepoDetails = () => {
       color: "#ddd",
     },
   };
+
+  useEffect(() => {
+    if (!repo) return;
+    const fetchDependencies = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const owner = repo.owner.login;
+        const name = repo.name;
+        const res = await fetch(
+          `http://localhost:3000/scrape-dependencies/${owner}/${name}`
+        );
+
+        if (!res.ok) throw new Error("Failed to fetch dependencies");
+
+        const data = await res.json();
+        setDependencies(data);
+      } catch (err) {
+        console.error("❌ Error:", err);
+        setError("Failed to load dependency data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDependencies();
+  }, [repo]);
 
   return (
     <div style={styles.container}>
