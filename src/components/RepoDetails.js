@@ -61,7 +61,13 @@ const RepoDetails = () => {
     },
     support: {
       label: "Support",
-      content: <SupportSection repo={repo} />,
+      content: (
+        <SupportSection
+          repo={repo}
+          dependencies={dependencies}
+          loading={loading}
+        />
+      ),
     },
     dependencyGraph: {
       label: "Dependency Graph",

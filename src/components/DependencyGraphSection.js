@@ -1,36 +1,68 @@
 import React, { useEffect, useState, useRef } from "react";
 import Tree from "react-d3-tree";
 import html2canvas from "html2canvas";
+import RepoTreeVertical from "./RepoTreeVertical";
 
-const renderNodeLabel = ({ nodeDatum }) => (
-  <g
-    onClick={() => window.open("https://www.google.com", "_blank")}
-    style={{ cursor: "pointer" }}>
-    <rect
-      width="300"
-      height="80"
-      x="-80"
-      y="-30"
-      rx="10"
-      ry="10"
+// const renderNodeLabel = ({ nodeDatum }) => (
+//   <g
+//     onClick={() => window.open("https://www.google.com", "_blank")}
+//     style={{ cursor: "pointer" }}>
+//     <rect
+//       width="300"
+//       height="80"
+//       x="-80"
+//       y="-30"
+//       rx="10"
+//       ry="10"
+//       fill="#edeef0"
+//       //  stroke="#0D3B66"
+//       strokeWidth="0.5"
+//     />
+//     <text
+//       textAnchor="middle"
+//       y="-10"
+//       fontSize={14}
+//       //fontWeight="bold"
+//       fill="#0D3B66">
+//       {nodeDatum.name}
+//     </text>
+//     <text textAnchor="middle" y="10" fontSize={10} fill="#555">
+//       {nodeDatum.license || "Unknown license"}
+//     </text>
+//     <text textAnchor="middle" y="25" fontSize={10} fill="#888">
+//       Forks: {nodeDatum.forks || 0}
+//     </text>
+//   </g>
+// );
+
+const renderNodeLabel = ({ nodeDatum, toggleNode }) => (
+  <g style={{ cursor: "pointer" }}>
+    {/* Circle that toggles node */}
+    <circle
+      r="20"
       fill="#edeef0"
-      //  stroke="#0D3B66"
-      strokeWidth="0.5"
+      stroke="#0D3B66"
+      strokeWidth="1"
+      onClick={toggleNode}
     />
-    <text
-      textAnchor="middle"
-      y="-10"
-      fontSize={14}
-      //fontWeight="bold"
-      fill="#0D3B66">
-      {nodeDatum.name}
-    </text>
-    <text textAnchor="middle" y="10" fontSize={10} fill="#555">
-      {nodeDatum.license || "Unknown license"}
-    </text>
-    <text textAnchor="middle" y="25" fontSize={10} fill="#888">
-      Forks: {nodeDatum.forks || 0}
-    </text>
+
+    {/* Group for text, clicking it opens external link */}
+    <g onClick={() => window.open("https://www.google.com", "_blank")}>
+      <text textAnchor="middle" y="-30" fontSize={14} fill="#0D3B66">
+        {nodeDatum.name}
+      </text>
+      <text textAnchor="middle" y="35" fontSize={10} fill="#555">
+        {nodeDatum.license || "Unknown license"}
+      </text>
+      <text textAnchor="middle" y="50" fontSize={10} fill="#888">
+        Forks: {nodeDatum.forks || 0}
+      </text>
+      {nodeDatum.attributes?.department && (
+        <text textAnchor="middle" y="65" fontSize={10} fill="#444">
+          Department: {nodeDatum.attributes.department}
+        </text>
+      )}
+    </g>
   </g>
 );
 
@@ -77,7 +109,7 @@ const DependencyGraphSection = ({ repo, dependencies, loading }) => {
 
   return (
     <div>
-      <div style={{ marginBottom: "1rem", textAlign: "right" }}>
+      {/* <div style={{ marginBottom: "1rem", textAlign: "right" }}>
         <button
           onClick={handleDownload}
           style={{
@@ -115,12 +147,12 @@ const DependencyGraphSection = ({ repo, dependencies, loading }) => {
             initialDepth={Infinity}
             collapsible={true}
             translate={translate}
-            orientation="vertical"
+            orientation="horizontal"
             renderCustomNodeElement={renderNodeLabel}
             onNodeClick={(node) => setSelectedNode(node.data)}
             pathFunc="diagonal"
             pathClassFunc={() => "custom-link"}
-            separation={{ siblings: 3, nonSiblings: 6 }}
+            separation={{ siblings: 1, nonSiblings: 2 }}
             styles={{
               links: {
                 stroke: "#4dabf7 !important",
@@ -147,7 +179,9 @@ const DependencyGraphSection = ({ repo, dependencies, loading }) => {
             <strong>Forks:</strong> {selectedNode.forks}
           </p>
         </div>
-      )}
+      )} */}
+
+      <RepoTreeVertical data={dependencies} loading={loading} />
     </div>
   );
 };
