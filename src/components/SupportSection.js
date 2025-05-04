@@ -9,13 +9,7 @@ const SupportSection = ({ repo, dependencies, loading }) => {
         maxHeight: "90vh",
         overflow: "auto",
         fontFamily: "sans-serif",
-      }}>
-      {/* <h2>Dependency Tree: {dependencies.name}</h2>
-      <TreeNode node={dependencies} /> */}
-      {/* <RepoTree /> */}
-      {/* <RepoTreeProject /> */}
-      <RepoTreeVertical />
-    </div>
+      }}></div>
   );
 };
 

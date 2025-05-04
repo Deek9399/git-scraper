@@ -128,6 +128,8 @@ const TreeNode = ({ node, level = 0, isLast = true }) => {
 };
 
 const RepoTreeVertical = ({ data, loading }) => {
+  console.log("9999999999999999", data);
+
   const treeRef = useRef(null);
 
   const handleDownload = () => {
