@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import RepoTable from "./RepoTable";
-import GitHubLogo from "../assets/github-mark-white.svg";
+import GitHubLogo from "../assets/github-mark.svg";
 
 const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
 
@@ -208,8 +208,8 @@ function RepoSearch() {
     <div
       style={{
         minHeight: "100vh",
-        backgroundColor: "#0D1117",
-        color: "#C9D1D9",
+        backgroundColor: "#FFFFFF",
+        color: "#24292E",
         padding: "2rem",
         display: "flex",
         flexDirection: "column",
@@ -245,8 +245,8 @@ function RepoSearch() {
       {dialogMessage && (
         <div
           style={{
-            backgroundColor: "#21262D",
-            border: "1px solid #30363D",
+            backgroundColor: "#FFFFFF",
+            border: "1px solid #D0D7DE",
             color: "#F85149",
             padding: "0.75rem 1.25rem",
             borderRadius: "6px",
@@ -263,17 +263,24 @@ function RepoSearch() {
           e.preventDefault();
           handleSearch();
         }}
-        style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem" }}>
+        style={{
+          display: "flex",
+          gap: "0.5rem",
+          marginBottom: "1rem",
+          flexWrap: "wrap",
+          alignItems: "center",
+        }}>
         <input
           style={{
             padding: "0.6rem 1rem",
             fontSize: "1rem",
             borderRadius: "6px",
-            border: "1px solid #30363D",
-            backgroundColor: "#161B22",
-            color: "#C9D1D9",
+            border: "1px solid #D0D7DE",
+            backgroundColor: "#FFFFFF",
+            color: "#24292E",
             outline: "none",
             minWidth: "320px",
+            boxShadow: "inset 0 1px 2px rgba(0,0,0,0.075)",
           }}
           type="text"
           placeholder="Search for a repository... (e.g. mit, sorting)"
@@ -284,12 +291,13 @@ function RepoSearch() {
           style={{
             padding: "0.6rem 1.2rem",
             fontSize: "1rem",
-            backgroundColor: "#238636",
-            color: "#ffffff",
+            backgroundColor: "#2DA44E",
+            color: "#FFFFFF",
             border: "none",
             borderRadius: "6px",
             cursor: "pointer",
             fontWeight: "bold",
+            transition: "background-color 0.2s ease",
           }}
           type="submit">
           Search

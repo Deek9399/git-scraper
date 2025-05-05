@@ -6,6 +6,7 @@ import LicensingSection from "./LicensingSection";
 import PluggabilitySection from "./PluggabilitySection";
 import SupportSection from "./SupportSection";
 import DependencyGraphSection from "./DependencyGraphSection";
+import ExtensibilitySection from "./ExtensibilitySection";
 
 const RepoDetails = () => {
   const { state } = useLocation();
@@ -16,14 +17,6 @@ const RepoDetails = () => {
   const repo = state?.repo;
   const [activeSection, setActiveSection] = useState("description");
 
-  // if (!repo) {
-  //   return (
-  //     <div style={{ padding: "2rem", color: "#ccc" }}>
-  //       No repository data available.
-  //     </div>
-  //   );
-  // }
-  console.log("11111111122222222", loading);
   const linkStyle = {
     color: "#4dabf7",
     textDecoration: "underline",
@@ -44,16 +37,8 @@ const RepoDetails = () => {
       content: <LicensingSection repo={repo} />,
     },
     extensibility: {
-      label: "Extension",
-      content: (
-        <div>
-          <p>
-            {repo.topics?.length
-              ? repo.topics.join(", ")
-              : "No keywords or topics provided."}
-          </p>
-        </div>
-      ),
+      label: "Extensibility",
+      content: <ExtensibilitySection repo={repo} />,
     },
     pluggability: {
       label: "Pluggability",
@@ -85,48 +70,54 @@ const RepoDetails = () => {
     container: {
       display: "flex",
       minHeight: "100vh",
-      backgroundColor: "#121212",
-      color: "#f0f0f0",
-      fontFamily: "Segoe UI, sans-serif",
+      backgroundColor: "#ffffff", // GitHub uses white background
+      color: "#24292e", // GitHub dark text
+      fontFamily:
+        "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
     },
     sidebarWrapper: {
       display: "flex",
       flexDirection: "column",
       width: "250px",
-      backgroundColor: "#1e1e1e",
-      borderRight: "1px solid #333",
+      backgroundColor: "#f6f8fa", // GitHub sidebar gray
+      borderRight: "1px solid #d0d7de", // GitHub subtle border
       padding: "1rem",
     },
     backButton: {
       fontSize: "0.95rem",
       fontWeight: "500",
-      color: "#4dabf7",
+      color: "#0969da", // GitHub link blue
       cursor: "pointer",
       marginBottom: "2rem",
     },
     sidebarItem: (isActive) => ({
       padding: "0.75rem 1rem",
-      borderRadius: "8px",
+      borderRadius: "6px",
       cursor: "pointer",
-      backgroundColor: isActive ? "#333" : "transparent",
+      backgroundColor: isActive ? "#eaeef2" : "transparent",
       fontWeight: isActive ? "600" : "400",
-      color: isActive ? "#4dabf7" : "#ccc",
-      transition: "background-color 0.2s",
+      color: isActive ? "#0969da" : "#57606a", // active vs neutral
+      transition: "background-color 0.2s, color 0.2s",
     }),
     contentArea: {
       flex: 1,
       padding: "2rem",
+      backgroundColor: "#ffffff",
     },
     sectionTitle: {
-      fontSize: "1.5rem",
-      fontWeight: "600",
+      fontSize: "1.5rem", // ~20px
+      fontWeight: 600,
+      color: "#24292e", // GitHub dark gray
+      paddingBottom: "0.25rem",
       marginBottom: "1rem",
-      color: "#fff",
+      borderBottom: "1px solid #e1e4e8", // subtle border
+      fontFamily:
+        "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
     },
     sectionContent: {
       fontSize: "1rem",
       lineHeight: "1.6",
-      color: "#ddd",
+      color: "#24292e",
     },
   };
 

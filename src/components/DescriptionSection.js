@@ -29,6 +29,29 @@ const DescriptionSection = ({ repo }) => {
         <strong>Last Updated:</strong>{" "}
         {new Date(repo.updated_at).toLocaleString()}
       </p>
+      <p>
+        <strong>Homepage:</strong>{" "}
+        {repo.homepage ? (
+          <a href={repo.homepage} target="_blank" rel="noopener noreferrer">
+            {repo.homepage}
+          </a>
+        ) : (
+          "N/A"
+        )}
+      </p>
+      <p>
+        <strong>Topics:</strong>{" "}
+        {repo.topics.length ? repo.topics.join(", ") : "None"}
+      </p>
+      <p>
+        <strong>Open Issues:</strong> {repo.open_issues_count}
+      </p>
+      <p>
+        <strong>Archived:</strong> {repo.archived ? "Yes" : "No"}
+      </p>
+      <p>
+        <strong>Disabled:</strong> {repo.disabled ? "Yes" : "No"}
+      </p>
     </div>
   );
 };
