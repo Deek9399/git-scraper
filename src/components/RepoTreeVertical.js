@@ -34,7 +34,7 @@ const NodeBox = forwardRef(({ node, onClick }, ref) => (
       </div>
     </div>
     {node.children.length > 0 && (
-      <div style={{ fontSize: "0.75em", marginTop: "4px", color: "#8250DF" }}>
+      <div style={{ fontSize: "0.75em", marginTop: "4px", color: "#008000" }}>
         ▶ Click to {node._expanded ? "collapse" : "expand"}
       </div>
     )}
@@ -69,7 +69,7 @@ const TreeNode = ({ node, level = 0, isLast = true }) => {
                 position: "absolute",
                 top: "50%",
                 width: "120px",
-                borderBottom: "2px solid #8250DF",
+                borderBottom: "2px solid #000000",
                 left: "10%",
               }}
             />
@@ -86,7 +86,7 @@ const TreeNode = ({ node, level = 0, isLast = true }) => {
       {expanded && node.children.length > 0 && (
         <div
           style={{
-            borderLeft: "2px solid #8250DF",
+            borderLeft: "2px solid #000000",
             marginLeft: 260,
             paddingLeft: 20,
           }}>
@@ -105,6 +105,7 @@ const TreeNode = ({ node, level = 0, isLast = true }) => {
 };
 
 const RepoTreeVertical = ({ data, loading }) => {
+  console.log("data", data);
   const treeRef = useRef(null);
 
   const handleDownload = () => {
