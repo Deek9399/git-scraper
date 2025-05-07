@@ -1,7 +1,6 @@
-// DescriptionSection.jsx
-const DescriptionSection = ({ repo }) => {
-  console.log("Repository data:", repo);
+import { formatDate } from "../common";
 
+const DescriptionSection = ({ repo }) => {
   return (
     <div>
       <h3>{repo.full_name}</h3>
@@ -22,12 +21,10 @@ const DescriptionSection = ({ repo }) => {
         <strong>Forks:</strong> {repo.forks_count}
       </p>
       <p>
-        <strong>Created At:</strong>{" "}
-        {new Date(repo.created_at).toLocaleString()}
+        <strong>Created At:</strong> {formatDate(repo.created_at)}
       </p>
       <p>
-        <strong>Last Updated:</strong>{" "}
-        {new Date(repo.updated_at).toLocaleString()}
+        <strong>Last Updated:</strong> {formatDate(repo.updated_at)}
       </p>
       <p>
         <strong>Homepage:</strong>{" "}

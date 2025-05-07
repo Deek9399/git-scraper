@@ -7,6 +7,7 @@ import PluggabilitySection from "./PluggabilitySection";
 import SupportSection from "./SupportSection";
 import DependencyGraphSection from "./DependencyGraphSection";
 import ExtensibilitySection from "./ExtensibilitySection";
+import OriginPedigreeDetails from "./OriginPedigreeDetails";
 
 const RepoDetails = () => {
   const { state } = useLocation();
@@ -27,6 +28,10 @@ const RepoDetails = () => {
     description: {
       label: "Description",
       content: <DescriptionSection repo={repo} />,
+    },
+    origin: {
+      label: "Origin and Pedigree",
+      content: <OriginPedigreeDetails repo={repo} />,
     },
     contributors: {
       label: "Contributors",

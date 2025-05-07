@@ -56,7 +56,7 @@ const ExtensibilitySection = ({ repo }) => {
           paddingBottom: "0.5rem",
           marginBottom: "1rem",
         }}>
-        🧩 Extensibility Score: {extensibilityScore}/100
+        Extensibility Score: {extensibilityScore}/100
       </h3>
 
       <p
@@ -72,7 +72,7 @@ const ExtensibilitySection = ({ repo }) => {
       <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
         <div style={scoreBoxStyle}>
           <div>
-            <strong>⭐ Stars</strong> ({repo.stargazers_count})
+            <strong>Stars</strong> ({repo.stargazers_count})
           </div>
           <div style={scoreValueStyle}>
             {repo.stargazers_count > 5000
@@ -85,7 +85,7 @@ const ExtensibilitySection = ({ repo }) => {
 
         <div style={scoreBoxStyle}>
           <div>
-            <strong>🍴 Forks</strong> ({repo.forks_count})
+            <strong>Forks</strong> ({repo.forks_count})
           </div>
           <div style={scoreValueStyle}>
             {repo.forks_count > 1000
@@ -98,7 +98,7 @@ const ExtensibilitySection = ({ repo }) => {
 
         <div style={scoreBoxStyle}>
           <div>
-            <strong>👀 Watchers</strong> ({repo.watchers_count})
+            <strong>Watchers</strong> ({repo.watchers_count})
           </div>
           <div style={scoreValueStyle}>
             {repo.watchers_count > 500 ? "+10" : "+0"}
@@ -107,7 +107,7 @@ const ExtensibilitySection = ({ repo }) => {
 
         <div style={scoreBoxStyle}>
           <div>
-            <strong>📄 License</strong> ({repo.license?.spdx_id || "None"})
+            <strong>License</strong> ({repo.license?.spdx_id || "None"})
           </div>
           <div style={scoreValueStyle}>
             {repo.license &&
@@ -121,7 +121,7 @@ const ExtensibilitySection = ({ repo }) => {
 
         <div style={scoreBoxStyle}>
           <div>
-            <strong>📦 Dependencies</strong> ({repo.dependencies?.length || 0})
+            <strong>Dependencies</strong> ({repo.dependencies?.length || 0})
           </div>
           <div style={scoreValueStyle}>
             {repo.dependencies && repo.dependencies.length > 0 ? "+25" : "+0"}

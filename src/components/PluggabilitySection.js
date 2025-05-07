@@ -16,19 +16,16 @@ const calculatePlugabilityScore = (repo) => {
     breakdown.push({ points, reason });
   };
 
-  // ⭐ Stars
   if (stars > 1000) add(15, "Highly popular (1000+ stars)");
   else if (stars > 100) add(10, "Popular (100+ stars)");
   else if (stars > 10) add(5, "Moderately known (10+ stars)");
   else add(0, "Low popularity");
 
-  // 🍴 Forks
   if (forks > 1000) add(10, "Highly forked (1000+ forks)");
   else if (forks > 100) add(7, "Well forked (100+ forks)");
   else if (forks > 10) add(4, "Some reuse (10+ forks)");
   else add(0, "Low fork count");
 
-  // 🔌 Library/Docker
   if (
     topics.some((t) => t.includes("lib") || t.includes("docker")) ||
     desc.includes("docker")
@@ -36,7 +33,6 @@ const calculatePlugabilityScore = (repo) => {
     add(10, "Tagged/described as library or Docker");
   else add(0, "No library/docker tags");
 
-  // 🛠 Modification requirement
   if (
     desc.includes("plug-and-play") ||
     desc.includes("wrapper") ||
@@ -45,23 +41,19 @@ const calculatePlugabilityScore = (repo) => {
     add(10, "Described as plug-and-play or wrapper");
   else add(0, "No plug-and-play indicators");
 
-  // 🌐 Interface
   if (desc.includes("rest") || topics.includes("rest"))
     add(10, "REST interface detected");
   else if (topics.some((t) => ["soap", "socket", "message"].includes(t)))
     add(5, "Other interface type (SOAP/sockets/etc.)");
   else add(0, "No interface specified");
 
-  // ⚙️ Size-based resource demand
   if (size < 50000) add(10, "Lightweight module (<50MB)");
   else if (size < 150000) add(7, "Moderate size (<150MB)");
   else add(4, "Large codebase");
 
-  // 📘 Docs
   if (repo.homepage || repo.has_wiki) add(10, "Has homepage or wiki");
   else add(0, "No documentation found");
 
-  // 📦 Precompiled or Installable
   if (
     topics.includes("binary") ||
     topics.includes("cli") ||
@@ -70,12 +62,10 @@ const calculatePlugabilityScore = (repo) => {
     add(10, "Precompiled or installable");
   else add(0, "No installability indicators");
 
-  // 💬 Language compatibility
   if (compatibleLangs.includes(repo.language))
     add(10, `Language is compatible (${repo.language})`);
   else add(0, `Language not in preferred list (${repo.language || "unknown"})`);
 
-  // 🧩 Standalone Service
   if (
     topics.includes("rest") ||
     topics.includes("service") ||
@@ -107,7 +97,7 @@ const PlugabilitySection = ({ repo }) => {
           paddingBottom: "0.5rem",
           marginBottom: "1rem",
         }}>
-        🔌 Plugability Score: {score}/100
+        Plugability Score: {score}/100
       </h3>
       <p
         style={{
@@ -127,19 +117,19 @@ const PlugabilitySection = ({ repo }) => {
         <div style={{ marginTop: "0.5rem" }}>
           The score is calculated based on:
           <ul style={{ paddingLeft: "1.2rem", marginTop: "0.5rem" }}>
-            <li>⭐ Stars and 🍴 Forks — to reflect popularity and reuse</li>
-            <li>🔌 Format — whether it's a library or Docker-ready</li>
+            <li>Stars and Forks — to reflect popularity and reuse</li>
+            <li>Format — whether it's a library or Docker-ready</li>
             <li>
-              🛠 Modification — whether it’s plug-and-play or requires changes
+              Modification — whether it’s plug-and-play or requires changes
             </li>
-            <li>🌐 Interface — REST, sockets, or SOAP support</li>
-            <li>📘 Docs — presence of homepage or wiki</li>
-            <li>📦 Installability — CLI or binary tags</li>
+            <li>Interface — REST, sockets, or SOAP support</li>
+            <li>Docs — presence of homepage or wiki</li>
+            <li>Installability — CLI or binary tags</li>
             <li>
-              💬 Language — compatibility with JavaScript, Python, Java, etc.
+              Language — compatibility with JavaScript, Python, Java, etc.
             </li>
-            <li>⚙️ Size — smaller modules score higher</li>
-            <li>🧩 Deployability — can it run standalone?</li>
+            <li>Size — smaller modules score higher</li>
+            <li>Deployability — can it run standalone?</li>
           </ul>
         </div>
       </details>
