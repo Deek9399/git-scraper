@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, forwardRef } from "react";
 import html2canvas from "html2canvas";
 
@@ -42,10 +43,9 @@ const NodeBox = forwardRef(({ node, onClick }, ref) => (
 ));
 
 // Recursive renderer
-const TreeNode = ({ node, level = 0, isLast = true }) => {
+const TreeNode = ({ node, level = 0 }) => {
   const [expanded, setExpanded] = useState(false);
-
-  const isBeyondLimit = level >= 3;
+  const isBeyondLimit = level >= 2;
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
@@ -88,7 +88,6 @@ const TreeNode = ({ node, level = 0, isLast = true }) => {
         />
       </div>
 
-      {/* ✅ Show children only if within depth limit */}
       {expanded && !isBeyondLimit && node.children.length > 0 && (
         <div
           style={{
@@ -101,59 +100,31 @@ const TreeNode = ({ node, level = 0, isLast = true }) => {
               key={index}
               node={child}
               level={level + 1}
-              isLast={index === node.children.length - 1}
             />
           ))}
         </div>
       )}
 
-      {/* ✅ If we hit level 3 and there are more dependencies */}
-      {/* {isBeyondLimit && node.beyondDepthCount > 0 && (
-        <div
-          style={{
-            marginLeft: 280,
-            marginTop: 10,
-            fontSize: "0.9rem",
-            color: "#8a63d2",
-            fontStyle: "italic",
-          }}>
-          +{node.beyondDepthCount} more dependencies
-        </div>
-      )} */}
-        {isBeyondLimit && (
-          <>
-            {node.children.map((child, idx) => (
-              <div
-                key={idx}
-                style={{
-                  marginLeft: 280,
-                  marginTop: 10,
-                  fontSize: "0.9rem",
-                  color: "#8a63d2",
-                  fontStyle: "italic",
-                }}>
-                ▶ {child.name} has +{child.beyondDepthCount || 0} more dependencies
-              </div>
-            ))}
-          </>
-        )}
+
+{isBeyondLimit  && (
+  <div
+    style={{
+      marginLeft: 300,          // Push a bit more to the right
+      marginTop: 15,            // Add some vertical gap
+      marginBottom: 20,         // Space below to avoid overlap
+      fontSize: "0.9rem",
+      color: "#8a63d2",
+      fontStyle: "italic",
+      whiteSpace: "nowrap",     // Prevent breaking
+    }}
+  >
+    ▶ +{node.beyondDepthCount} mor ▶ +:{node.beyondDepthCount} 
+  </div>
+)}
 
     </div>
   );
 };
-const handleExpand = async () => {
-  if (!expanded && node.children.length === 0 && node.url) {
-    const response = await fetch(`/api/dependency-node?url=${encodeURIComponent(node.url)}&depth=${level + 1}`);
-    const data = await response.json();
-    node.children = data.children || [];
-    node.beyondDepthCount = data.beyondDepthCount || 0;
-    setExpanded(true);
-  } else {
-    setExpanded(!expanded);
-  }
-};
-
- 
 
 const RepoTreeVertical = ({ data, loading }) => {
   const treeRef = useRef(null);
@@ -184,15 +155,7 @@ const RepoTreeVertical = ({ data, loading }) => {
         backgroundColor: "#FFFFFF",
         color: "#24292E",
       }}>
-      <div
-        style={{
-          textAlign: "right",
-          marginBottom: "40px",
-          marginRight: "40px",
-        }}>
-        {/* <h2 style={{ color: "#0969DA", marginBottom: "20px" }}>
-          📂 Project Structure View
-        </h2> */}
+      <div style={{ textAlign: "right", marginBottom: "40px", marginRight: "40px" }}>
         <button
           onClick={handleDownload}
           style={{

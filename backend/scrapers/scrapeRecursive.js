@@ -144,7 +144,12 @@ async function scrapeFullTree(owner, repoName) {
 
   return tree;
 }
+// Add a new exported function
+async function fetchSingleDependencyTree(url, currentDepth, maxDepth = 2, visited = new Set()) {
+  return await getDependencies(url, currentDepth, maxDepth, visited);
+}
+
+module.exports = { scrapeFullTree, fetchSingleDependencyTree };
 
 
 
-module.exports = { scrapeFullTree };
