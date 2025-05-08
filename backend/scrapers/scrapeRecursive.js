@@ -7,7 +7,7 @@ async function getMetadata(name) {
   console.log(`[INFO] Fetching metadata for: ${name}`);
 
   let githubRepo = name;
-  if (name.startsWith("@") ) {
+  if (name.startsWith("@") || !name.includes("/") ) {
     try {
       const npmResponse = await fetch(`https://registry.npmjs.org/${name}`);
       const npmData = await npmResponse.json();
@@ -148,6 +148,9 @@ async function scrapeFullTree(owner, repoName) {
 async function fetchSingleDependencyTree(url, currentDepth, maxDepth = 2, visited = new Set()) {
   return await getDependencies(url, currentDepth, maxDepth, visited);
 }
+
+
+
 
 module.exports = { scrapeFullTree, fetchSingleDependencyTree };
 

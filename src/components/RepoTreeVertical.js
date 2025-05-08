@@ -42,89 +42,119 @@ const NodeBox = forwardRef(({ node, onClick }, ref) => (
   </div>
 ));
 
-// Recursive renderer
+
+
 const TreeNode = ({ node, level = 0 }) => {
   const [expanded, setExpanded] = useState(false);
+  const [loadingChildren, setLoadingChildren] = useState(false);
+  const [children, setChildren] = useState(node.children || []);
+
   const isBeyondLimit = level >= 2;
+
+  const handleExpand = async () => {
+    if (expanded || isBeyondLimit) return;
+
+    if (!children || children.length === 0) {
+      setLoadingChildren(true);
+      try {
+        const response = await fetch(`/api/dependency-child?url=${encodeURIComponent(node.url)}&depth=${level + 1}`);
+        const result = await response.json();
+        setChildren(Array.isArray(result) ? result : []);
+      } catch (err) {
+        console.error("❌ Failed to fetch child dependencies:", err);
+      } finally {
+        setLoadingChildren(false);
+      }
+    }
+
+    setExpanded(true);
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          position: "relative",
-        }}>
+      <div style={{ display: "flex", alignItems: "flex-start", position: "relative" }}>
         {level > 0 && (
           <div style={{ width: 50, height: "100%", position: "relative" }}>
-            <div
-              style={{
-                position: "absolute",
-                top: 0,
-                bottom: expanded && node.children.length > 0 ? 0 : "50%",
-                left: "50%",
-                borderLeft: "2px solid #8250DF",
-              }}
-            />
-            <div
-              style={{
-                position: "absolute",
-                top: "50%",
-                width: "120px",
-                borderBottom: "2px solid #8250DF",
-                left: "10%",
-              }}
-            />
+            <div style={{
+              position: "absolute",
+              top: 0,
+              bottom: expanded && children.length > 0 ? 0 : "50%",
+              left: "50%",
+              borderLeft: "2px solid #8250DF"
+            }} />
+            <div style={{
+              position: "absolute",
+              top: "50%",
+              width: "120px",
+              borderBottom: "2px solid #8250DF",
+              left: "10%"
+            }} />
           </div>
         )}
 
         <NodeBox
           node={{ ...node, _expanded: expanded }}
-          onClick={() => {
-            if (!isBeyondLimit && node.children.length > 0) {
-              setExpanded(!expanded);
-            }
-          }}
+          onClick={handleExpand}
         />
       </div>
 
-      {expanded && !isBeyondLimit && node.children.length > 0 && (
-        <div
-          style={{
-            borderLeft: "2px solid #8250DF",
-            marginLeft: 260,
-            paddingLeft: 20,
-          }}>
-          {node.children.map((child, index) => (
-            <TreeNode
-              key={index}
-              node={child}
-              level={level + 1}
-            />
-          ))}
+      {loadingChildren && (
+        <div style={{ marginLeft: 280, color: "#8a63d2", fontStyle: "italic" }}>
+          ⏳ Loading dependencies...
         </div>
       )}
 
-
-{isBeyondLimit  && (
+     
+      {expanded && !isBeyondLimit && node.children.length > 0 && (
   <div
     style={{
-      marginLeft: 300,          // Push a bit more to the right
-      marginTop: 15,            // Add some vertical gap
-      marginBottom: 20,         // Space below to avoid overlap
-      fontSize: "0.9rem",
-      color: "#8a63d2",
-      fontStyle: "italic",
-      whiteSpace: "nowrap",     // Prevent breaking
-    }}
-  >
-    ▶ +{node.beyondDepthCount} mor ▶ +:{node.beyondDepthCount} 
+      borderLeft: "2px solid #8250DF",
+      marginLeft: 260,
+      paddingLeft: 20,
+    }}>
+    {node.children.map((child, index) => (
+      <div key={index} style={{ marginBottom: "80px" }}>
+        <TreeNode node={child} level={level + 1} />
+      </div>
+    ))}
   </div>
 )}
+
+
+     
+      {isBeyondLimit && (
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "flex-start",
+      marginLeft: "320px", // Push to the right of the node box
+      marginTop: "-60px",  // Align vertically with the node box
+      marginBottom: "60px",
+    }}
+  >
+    <div
+      style={{
+        backgroundColor: "#8a63d2",
+        color: "#ffffff",
+        borderRadius: "999px",
+        padding: "6px 12px",
+        fontSize: "0.8rem",
+        fontWeight: "bold",
+        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+      }}
+    >
+      +{node.beyondDepthCount}
+    </div>
+  </div>
+)}
+
+  
 
     </div>
   );
 };
+
 
 const RepoTreeVertical = ({ data, loading }) => {
   const treeRef = useRef(null);
