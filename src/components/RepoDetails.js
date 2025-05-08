@@ -137,6 +137,7 @@ const RepoDetails = () => {
 
         const data = await res.json();
         setDependencies(data);
+        console.log('individual repo details',data);
       } catch (err) {
         console.error("❌ Error:", err);
         setError("Failed to load dependency data.");

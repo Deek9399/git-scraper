@@ -66,6 +66,7 @@ const GitHubCProjects = () => {
     try {
       const response = await fetch(apiUrl);
       if (!response.ok) {
+        console.log('Data from backend :',response);
         throw new Error(`GitHub API error (status ${response.status})`);
       }
 

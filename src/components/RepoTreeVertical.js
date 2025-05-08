@@ -45,6 +45,8 @@ const NodeBox = forwardRef(({ node, onClick }, ref) => (
 const TreeNode = ({ node, level = 0, isLast = true }) => {
   const [expanded, setExpanded] = useState(false);
 
+  const isBeyondLimit = level >= 3;
+
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <div
@@ -75,15 +77,19 @@ const TreeNode = ({ node, level = 0, isLast = true }) => {
             />
           </div>
         )}
+
         <NodeBox
           node={{ ...node, _expanded: expanded }}
           onClick={() => {
-            if (node.children.length > 0) setExpanded(!expanded);
+            if (!isBeyondLimit && node.children.length > 0) {
+              setExpanded(!expanded);
+            }
           }}
         />
       </div>
 
-      {expanded && node.children.length > 0 && (
+      {/* ✅ Show children only if within depth limit */}
+      {expanded && !isBeyondLimit && node.children.length > 0 && (
         <div
           style={{
             borderLeft: "2px solid #8250DF",
@@ -100,9 +106,54 @@ const TreeNode = ({ node, level = 0, isLast = true }) => {
           ))}
         </div>
       )}
+
+      {/* ✅ If we hit level 3 and there are more dependencies */}
+      {/* {isBeyondLimit && node.beyondDepthCount > 0 && (
+        <div
+          style={{
+            marginLeft: 280,
+            marginTop: 10,
+            fontSize: "0.9rem",
+            color: "#8a63d2",
+            fontStyle: "italic",
+          }}>
+          +{node.beyondDepthCount} more dependencies
+        </div>
+      )} */}
+        {isBeyondLimit && (
+          <>
+            {node.children.map((child, idx) => (
+              <div
+                key={idx}
+                style={{
+                  marginLeft: 280,
+                  marginTop: 10,
+                  fontSize: "0.9rem",
+                  color: "#8a63d2",
+                  fontStyle: "italic",
+                }}>
+                ▶ {child.name} has +{child.beyondDepthCount || 0} more dependencies
+              </div>
+            ))}
+          </>
+        )}
+
     </div>
   );
 };
+const handleExpand = async () => {
+  if (!expanded && node.children.length === 0 && node.url) {
+    const response = await fetch(`/api/dependency-node?url=${encodeURIComponent(node.url)}&depth=${level + 1}`);
+    const data = await response.json();
+    node.children = data.children || [];
+    node.beyondDepthCount = data.beyondDepthCount || 0;
+    setExpanded(true);
+  } else {
+    setExpanded(!expanded);
+  }
+};
+
+ 
 
 const RepoTreeVertical = ({ data, loading }) => {
   const treeRef = useRef(null);
