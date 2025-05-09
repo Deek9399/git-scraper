@@ -8,7 +8,16 @@ const DescriptionSection = ({ repo }) => {
 
   return (
     <div>
-      <h3>{repo.full_name}</h3>
+      <h3>
+  <a
+    href={repo.html_url}
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{ color: "#0969DA", textDecoration: "none" }}
+  >
+    {repo.full_name}
+  </a>
+</h3>
       <p>{repo.description || "No description provided."}</p>
       <p>
         <strong>Language:</strong> {repo.language || "N/A"}

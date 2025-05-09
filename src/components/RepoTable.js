@@ -92,7 +92,8 @@ const RepoTable = ({ repos }) => {
 
         <tbody>
           {currentRepos.map((repo) => (
-            <tr key={repo.id}>
+            <tr key={repo.id} onClick={() => handleViewDetails(repo)} style={{ cursor: "pointer" }}>
+
               <td>
                 <a
                   href={repo.html_url}
