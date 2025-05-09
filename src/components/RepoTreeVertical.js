@@ -63,7 +63,7 @@ const TreeNode = ({ node, level = 0 }) => {
   const [loadingChildren, setLoadingChildren] = useState(false);
   const [children, setChildren] = useState(node.children || []);
 
-  const isBeyondLimit = level >= 2;
+  const isBeyondLimit = level >= 3;
 
   const handleExpand = async () => {
     if (expanded || isBeyondLimit) return;

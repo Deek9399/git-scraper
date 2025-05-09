@@ -68,6 +68,49 @@ const ExtensibilitySection = ({ repo }) => {
         The extensibility score reflects how open, forkable, and reusable this
         repository is based on its popularity, license, and modularity.
       </p>
+      <details
+  style={{ marginBottom: "1rem", fontSize: "0.9rem", color: "#57606a" }}>
+  <summary
+    style={{ cursor: "pointer", color: "#0969da", fontWeight: 500 }}>
+    What does the Extensibility Score mean?
+  </summary>
+  <div style={{ marginTop: "0.5rem" }}>
+    The Extensibility Score is a measure of how easily a repository can be extended or built upon.
+    <br />
+    The score is calculated based on:
+    <ul style={{ paddingLeft: "1.2rem", marginTop: "0.5rem" }}>
+      <li><strong>Stars</strong>:
+        <ul style={{ paddingLeft: "1rem" }}>
+          <li>&gt; 5000 → +20 points</li>
+          <li>&gt; 1000 → +10 points</li>
+        </ul>
+      </li>
+      <li><strong>Forks</strong>:
+        <ul style={{ paddingLeft: "1rem" }}>
+          <li>&gt; 1000 → +20 points</li>
+          <li>&gt; 300 → +10 points</li>
+        </ul>
+      </li>
+      <li><strong>Watchers</strong>:
+        <ul style={{ paddingLeft: "1rem" }}>
+          <li>&gt; 500 → +10 points</li>
+        </ul>
+      </li>
+      <li><strong>License</strong>:
+        <ul style={{ paddingLeft: "1rem" }}>
+          <li>MIT / Apache-2.0 / BSD → +15 points</li>
+        </ul>
+      </li>
+      <li><strong>Dependencies</strong>:
+        <ul style={{ paddingLeft: "1rem" }}>
+          <li>Has dependencies → +25 points</li>
+        </ul>
+      </li>
+    </ul>
+    <strong>Total Score:</strong> Maximum of 100 points.
+    <div style={{ marginTop: "2.5rem" }} />
+  </div>
+</details>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
         <div style={scoreBoxStyle}>

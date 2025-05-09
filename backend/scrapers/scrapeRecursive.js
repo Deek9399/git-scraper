@@ -61,7 +61,7 @@ async function getMetadata(name) {
 
 
 
-async function getDependencies(url, depth = 1, maxDepth = 2, visited = new Set()) {
+async function getDependencies(url, depth = 1, maxDepth = 3, visited = new Set()) {
   if (visited.has(url)) {
     console.log(`[🛑] Skipping already visited: ${url}`);
     return { beyondDepthCount: 0 };
@@ -132,7 +132,7 @@ async function getDependencies(url, depth = 1, maxDepth = 2, visited = new Set()
 async function scrapeFullTree(owner, repoName) {
   const repoFullName = `${owner}/${repoName}`;
   const url = `https://github.com/${repoFullName}/network/dependencies`;
-  const children = await getDependencies(url, 1, 2); // max depth = 3
+  const children = await getDependencies(url, 1, 3); // max depth = 3
   const mainMeta = await getMetadata(repoFullName);
 
   const tree = {
@@ -144,7 +144,7 @@ async function scrapeFullTree(owner, repoName) {
 
   return tree;
 }
-// Add a new exported function
+// a new exported function
 async function fetchSingleDependencyTree(url, currentDepth, maxDepth = 2, visited = new Set()) {
   return await getDependencies(url, currentDepth, maxDepth, visited);
 }

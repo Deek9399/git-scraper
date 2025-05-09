@@ -109,30 +109,55 @@ const PlugabilitySection = ({ repo }) => {
         your system based on its metadata and usage characteristics.
       </p>
       <details
-        style={{ marginBottom: "1rem", fontSize: "0.9rem", color: "#57606a" }}>
-        <summary
-          style={{ cursor: "pointer", color: "#0969da", fontWeight: 500 }}>
-          What does the Plugability Score mean?
-        </summary>
-        <div style={{ marginTop: "0.5rem" }}>
-          The score is calculated based on:
-          <ul style={{ paddingLeft: "1.2rem", marginTop: "0.5rem" }}>
-            <li>Stars and 🍴 Forks — to reflect popularity and reuse</li>
-            <li>Format — whether it's a library or Docker-ready</li>
-            <li>
-              Modification — whether it’s plug-and-play or requires changes
-            </li>
-            <li>Interface — REST, sockets, or SOAP support</li>
-            <li>Docs — presence of homepage or wiki</li>
-            <li>Installability — CLI or binary tags</li>
-            <li>
-              Language — compatibility with JavaScript, Python, Java, etc.
-            </li>
-            <li>Size — smaller modules score higher</li>
-            <li>Deployability — can it run standalone?</li>
-          </ul>
-        </div>
-      </details>
+  style={{ marginBottom: "1rem", fontSize: "0.9rem", color: "#57606a" }}>
+  <summary
+    style={{ cursor: "pointer", color: "#0969da", fontWeight: 500 }}>
+    What does the Plugability Score mean?
+  </summary>
+  <div style={{ marginTop: "0.5rem" }}>
+    This score estimates how easily a repository can be integrated into your system based on metadata and characteristics.
+    <br /><br />
+    The score is calculated based on:
+    <ul style={{ paddingLeft: "1.2rem", marginTop: "0.5rem" }}>
+      <li><strong>Stars</strong>:
+        <ul style={{ paddingLeft: "1rem" }}>
+          <li>&gt; 1000 → +15</li>
+          <li>&gt; 100 → +10</li>
+          <li>&gt; 10 → +5</li>
+        </ul>
+      </li>
+      <li><strong>Forks</strong>:
+        <ul style={{ paddingLeft: "1rem" }}>
+          <li>&gt; 1000 → +10</li>
+          <li>&gt; 100 → +7</li>
+          <li>&gt; 10 → +4</li>
+        </ul>
+      </li>
+      <li><strong>Format</strong> (Library / Docker tags): +10 if detected</li>
+      <li> <strong>Modification Need</strong> (plug-and-play, wrapper): +10 if detected</li>
+      <li><strong>Interface</strong>:
+        <ul style={{ paddingLeft: "1rem" }}>
+          <li>REST → +10</li>
+          <li>SOAP / Sockets → +5</li>
+        </ul>
+      </li>
+      <li> <strong>Size</strong>:
+        <ul style={{ paddingLeft: "1rem" }}>
+          <li>&lt; 50MB → +10</li>
+          <li>&lt; 150MB → +7</li>
+          <li>Larger → +4</li>
+        </ul>
+      </li>
+      <li><strong>Documentation</strong> (homepage/wiki): +10 if present</li>
+      <li><strong>Installability</strong> (CLI/binary tags): +10 if present</li>
+      <li> <strong>Language Compatibility</strong> (C, JavaScript, Python, etc.): +10</li>
+      <li> <strong>Deployability</strong> (service/api tags): +5 if detected</li>
+    </ul>
+    <strong>Total Score:</strong> Maximum of 100 points.
+    <div style={{ marginTop: "1.5rem" }} /> {/* spacing before next section */}
+  </div>
+</details>
+
 
       <div
         style={{
