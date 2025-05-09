@@ -70,8 +70,8 @@ const RepoDetails = () => {
     container: {
       display: "flex",
       minHeight: "100vh",
-      backgroundColor: "#ffffff", // GitHub uses white background
-      color: "#24292e", // GitHub dark text
+      backgroundColor: "#ffffff", 
+      color: "#24292e", 
       fontFamily:
         "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
     },
@@ -79,24 +79,24 @@ const RepoDetails = () => {
       display: "flex",
       flexDirection: "column",
       width: "250px",
-      backgroundColor: "#f6f8fa", // GitHub sidebar gray
-      borderRight: "1px solid #d0d7de", // GitHub subtle border
+      backgroundColor: "#f6f8fa", 
+      borderRight: "1px solid #d0d7de",
       padding: "1rem",
     },
     backButton: {
       fontSize: "0.95rem",
       fontWeight: "500",
-      color: "#0969da", // GitHub link blue
+      color: "#0969da", 
       cursor: "pointer",
       marginBottom: "2rem",
     },
     sidebarItem: (isActive) => ({
-      padding: "0.75rem 1rem",
+      padding: "0.9rem 1.2rem",
       borderRadius: "6px",
       cursor: "pointer",
       backgroundColor: isActive ? "#eaeef2" : "transparent",
-      fontWeight: isActive ? "600" : "400",
-      color: isActive ? "#0969da" : "#57606a", // active vs neutral
+      fontWeight: isActive ? "800" : "600",
+      color: isActive ? "#0969da" : "#57606a", 
       transition: "background-color 0.2s, color 0.2s",
     }),
     contentArea: {
@@ -105,12 +105,12 @@ const RepoDetails = () => {
       backgroundColor: "#ffffff",
     },
     sectionTitle: {
-      fontSize: "1.5rem", // ~20px
+      fontSize: "1.5rem", 
       fontWeight: 600,
-      color: "#24292e", // GitHub dark gray
+      color: "#24292e", 
       paddingBottom: "0.25rem",
       marginBottom: "1rem",
-      borderBottom: "1px solid #e1e4e8", // subtle border
+      borderBottom: "1px solid #e1e4e8", 
       fontFamily:
         "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
     },
@@ -139,7 +139,7 @@ const RepoDetails = () => {
         setDependencies(data);
         console.log('individual repo details',data);
       } catch (err) {
-        console.error("❌ Error:", err);
+        console.error("Error:", err);
         setError("Failed to load dependency data.");
       } finally {
         setLoading(false);
@@ -153,7 +153,7 @@ const RepoDetails = () => {
     <div style={styles.container}>
       <aside style={styles.sidebarWrapper}>
         <div style={styles.backButton} onClick={() => navigate("/")}>
-          ← Back
+          ← <strong>Back</strong>
         </div>
 
         {Object.entries(sections).map(([key, section]) => (

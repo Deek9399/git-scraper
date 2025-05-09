@@ -192,7 +192,7 @@ function RepoSearch() {
       setRepos([]);
       setError("Failed to fetch repositories. Please try again.");
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
@@ -205,119 +205,54 @@ function RepoSearch() {
   }, []);
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        backgroundColor: "#FFFFFF",
-        color: "#24292E",
-        padding: "2rem",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        fontFamily: "Segoe UI, sans-serif",
-      }}>
-      <h1
-        style={{
-          fontSize: "3rem",
-          marginBottom: "1rem",
-          display: "flex",
-          alignItems: "center",
-          gap: "0.75rem",
-        }}>
-        <img
-          src={GitHubLogo}
-          alt="GitHub Logo"
-          style={{ width: "50px", height: "50px" }}
-        />
+    <div className="repo-search-container">
+      <h1 className="repo-search-title">
+        <img src={GitHubLogo} alt="GitHub Logo" className="github-logo" />
         Web Scraper
       </h1>
-      <p
-        style={{
-          color: "#8B949E",
-          textAlign: "center",
-          maxWidth: "600px",
-          marginBottom: "1.5rem",
-        }}>
-        Search open-source repositories by keyword and see what dependencies
-        they're using.
+  
+      <p className="repo-search-subtitle">
+        Discover Open-Source projects and their Dependencies
       </p>
-
+  
       {dialogMessage && (
-        <div
-          style={{
-            backgroundColor: "#FFFFFF",
-            border: "1px solid #D0D7DE",
-            color: "#F85149",
-            padding: "0.75rem 1.25rem",
-            borderRadius: "6px",
-            marginBottom: "1rem",
-            maxWidth: "600px",
-            textAlign: "center",
-          }}>
+        <div className="dialog-message">
           {dialogMessage}
         </div>
       )}
-
+  
       <form
         onSubmit={(e) => {
           e.preventDefault();
           handleSearch();
         }}
-        style={{
-          display: "flex",
-          gap: "0.5rem",
-          marginBottom: "1rem",
-          flexWrap: "wrap",
-          alignItems: "center",
-        }}>
+        className="search-form"
+      >
         <input
-          style={{
-            padding: "0.6rem 1rem",
-            fontSize: "1rem",
-            borderRadius: "6px",
-            border: "1px solid #D0D7DE",
-            backgroundColor: "#FFFFFF",
-            color: "#24292E",
-            outline: "none",
-            minWidth: "320px",
-            boxShadow: "inset 0 1px 2px rgba(0,0,0,0.075)",
-          }}
           type="text"
           placeholder="Search for a repository... (e.g. mit, sorting)"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
         />
-        <button
-          style={{
-            padding: "0.6rem 1.2rem",
-            fontSize: "1rem",
-            backgroundColor: "#2DA44E",
-            color: "#FFFFFF",
-            border: "none",
-            borderRadius: "6px",
-            cursor: "pointer",
-            fontWeight: "bold",
-            transition: "background-color 0.2s ease",
-          }}
-          type="submit">
-          Search
-        </button>
+        <button type="submit" className="search-button">Search</button>
       </form>
-
-      {/* 🔄 Loading Spinner */}
+      
       {loading && (
-        <div style={{ margin: "2rem 0", textAlign: "center" }}>
-          <div className="spinner" />
-          <p style={{ color: "#8B949E", marginTop: "1rem" }}>
-            Fetching repositories...
-          </p>
+      <div className="loading-container">
+         <div className="dot-loader">
+          <div></div>
+          <div></div>
+          <div></div>
         </div>
-      )}
+          <p className="loading-text">Fetching repositories...</p>
+      </div>
+)}
 
-      {error && <p style={{ color: "#F85149" }}>{error}</p>}
+  
       {!loading && repos.length > 0 && <RepoTable repos={repos} />}
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 }
-
-export default RepoSearch;
+export default RepoSearch;  

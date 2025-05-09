@@ -3,17 +3,7 @@ const LicensingSection = ({ repo }) => {
 
   return (
     <div style={{ marginTop: "2rem" }}>
-      <h4
-        style={{
-          fontSize: "1.125rem",
-          color: "#24292e",
-          borderBottom: "1px solid #d0d7de",
-          paddingBottom: "0.5rem",
-          marginBottom: "1rem",
-        }}>
-        Licensing Information
-      </h4>
-
+      
       {license ? (
         <div style={{ lineHeight: "1.6", color: "#24292e" }}>
           <p>

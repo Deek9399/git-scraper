@@ -107,7 +107,7 @@ const PlugabilitySection = ({ repo }) => {
           paddingBottom: "0.5rem",
           marginBottom: "1rem",
         }}>
-        🔌 Plugability Score: {score}/100
+          Plugability Score: {score}/100
       </h3>
       <p
         style={{

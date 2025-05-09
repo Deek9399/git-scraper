@@ -19,37 +19,34 @@ const SupportSection = ({ repo }) => {
         backgroundColor: "#F6F8FA",
         borderRadius: "8px",
       }}>
-      <h3 style={{ color: "#0969DA", marginBottom: "1rem" }}>
-        🛠️ Support & Maturity
-      </h3>
       <ul style={{ listStyle: "none", padding: 0, lineHeight: 1.8 }}>
         <li>
-          <strong>🏢 Maintained by:</strong> {repo.owner?.login} (
+          <strong>Maintained by:</strong> {repo.owner?.login} (
           {isOrg ? "Organization" : "User"})
         </li>
         <li>
-          <strong>📈 Installed Base:</strong> {repo.stargazers_count} stars,{" "}
+          <strong>Installed Base:</strong> {repo.stargazers_count} stars,{" "}
           {repo.forks_count} forks
         </li>
         <li>
-          <strong>📅 Created:</strong> {createdDate} ({projectAgeYears}+ years
+          <strong>Created:</strong> {createdDate} ({projectAgeYears}+ years
           old)
         </li>
         <li>
-          <strong>🔄 Last Updated:</strong> {updatedDate}
+          <strong>Last Updated:</strong> {updatedDate}
         </li>
         <li>
-          <strong>📄 Default Branch:</strong>{" "}
+          <strong>Default Branch:</strong>{" "}
           {repo.default_branch || "Not specified"}
         </li>
         <li>
-          <strong>✅ Issues Enabled:</strong> {repo.has_issues ? "Yes" : "No"}
+          <strong>Issues Enabled:</strong> {repo.has_issues ? "Yes" : "No"}
         </li>
         <li>
-          <strong>💬 Discussions:</strong> {repo.has_discussions ? "Yes" : "No"}
+          <strong>Discussions:</strong> {repo.has_discussions ? "Yes" : "No"}
         </li>
         <li>
-          <strong>📚 Documentation:</strong>{" "}
+          <strong>Documentation:</strong>{" "}
           {repo.homepage ? (
             <a
               href={repo.homepage}
@@ -63,11 +60,11 @@ const SupportSection = ({ repo }) => {
           )}
         </li>
         <li>
-          <strong>🌍 Web Help Available:</strong>{" "}
+          <strong>Web Help Available:</strong>{" "}
           {repo.topics?.length > 0 || repo.homepage ? "Likely yes" : "Limited"}
         </li>
         <li>
-          <strong>💵 Paid Support:</strong>{" "}
+          <strong>Paid Support:</strong>{" "}
           {isOrg ? "Possibly (based on organization)" : "Not officially listed"}
         </li>
       </ul>
