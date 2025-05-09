@@ -1,6 +1,10 @@
-// DescriptionSection.jsx
 const DescriptionSection = ({ repo }) => {
-  console.log("Repository data:", repo);
+  const formatDate = (dateStr) =>
+    new Date(dateStr).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
 
   return (
     <div>
@@ -22,12 +26,10 @@ const DescriptionSection = ({ repo }) => {
         <strong>Forks:</strong> {repo.forks_count}
       </p>
       <p>
-        <strong>Created At:</strong>{" "}
-        {new Date(repo.created_at).toLocaleString()}
+        <strong>Created At:</strong> {formatDate(repo.created_at)}
       </p>
       <p>
-        <strong>Last Updated:</strong>{" "}
-        {new Date(repo.updated_at).toLocaleString()}
+        <strong>Last Updated:</strong> {formatDate(repo.updated_at)}
       </p>
       <p>
         <strong>Homepage:</strong>{" "}

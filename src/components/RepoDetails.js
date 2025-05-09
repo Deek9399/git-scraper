@@ -40,8 +40,8 @@ const RepoDetails = () => {
       label: "Extensibility",
       content: <ExtensibilitySection repo={repo} />,
     },
-    pluggability: {
-      label: "Pluggability",
+    plugability: {
+      label: "Plugability",
       content: <PluggabilitySection repo={repo} />,
     },
     support: {
@@ -70,8 +70,8 @@ const RepoDetails = () => {
     container: {
       display: "flex",
       minHeight: "100vh",
-      backgroundColor: "#ffffff", 
-      color: "#24292e", 
+      backgroundColor: "#ffffff",
+      color: "#24292e",
       fontFamily:
         "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
     },
@@ -79,14 +79,14 @@ const RepoDetails = () => {
       display: "flex",
       flexDirection: "column",
       width: "250px",
-      backgroundColor: "#f6f8fa", 
+      backgroundColor: "#f6f8fa",
       borderRight: "1px solid #d0d7de",
       padding: "1rem",
     },
     backButton: {
       fontSize: "0.95rem",
       fontWeight: "500",
-      color: "#0969da", 
+      color: "#0969da",
       cursor: "pointer",
       marginBottom: "2rem",
     },
@@ -96,7 +96,7 @@ const RepoDetails = () => {
       cursor: "pointer",
       backgroundColor: isActive ? "#eaeef2" : "transparent",
       fontWeight: isActive ? "800" : "600",
-      color: isActive ? "#0969da" : "#57606a", 
+      color: isActive ? "#0969da" : "#57606a",
       transition: "background-color 0.2s, color 0.2s",
     }),
     contentArea: {
@@ -105,12 +105,12 @@ const RepoDetails = () => {
       backgroundColor: "#ffffff",
     },
     sectionTitle: {
-      fontSize: "1.5rem", 
+      fontSize: "1.5rem",
       fontWeight: 600,
-      color: "#24292e", 
+      color: "#24292e",
       paddingBottom: "0.25rem",
       marginBottom: "1rem",
-      borderBottom: "1px solid #e1e4e8", 
+      borderBottom: "1px solid #e1e4e8",
       fontFamily:
         "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
     },
@@ -137,7 +137,7 @@ const RepoDetails = () => {
 
         const data = await res.json();
         setDependencies(data);
-        console.log('individual repo details',data);
+        console.log("individual repo details", data);
       } catch (err) {
         console.error("Error:", err);
         setError("Failed to load dependency data.");

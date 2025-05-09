@@ -36,7 +36,11 @@ const RepoTable = ({ repos }) => {
   const renderArrow = (key) => {
     const isActive = sortConfig.key === key;
     const direction = isActive && sortConfig.direction === "desc" ? "▼" : "▲";
-    return <span className={`sort-arrow ${isActive ? "active" : ""}`}>{direction}</span>;
+    return (
+      <span className={`sort-arrow ${isActive ? "active" : ""}`}>
+        {direction}
+      </span>
+    );
   };
 
   const renderHeader = (label, key) => (
@@ -45,43 +49,6 @@ const RepoTable = ({ repos }) => {
       {renderArrow(key)}
     </span>
   );
-  
-  
-  const thStyle = {
-    padding: "12px",
-    borderBottom: "1px solid #000000",
-    textAlign: "left",
-    fontWeight: 600,
-    fontSize: "14px",
-    backgroundColor: "#F6F8FA",
-    color: "#24292E",
-    position: "sticky", 
-    top: 0, 
-    zIndex: 1, 
-  };
-
-  const tdStyle = {
-    padding: "12px",
-    borderBottom: "1px solid #E1E4E8",
-    fontSize: "14px",
-    color: "#24292E",
-  };
-
-  const trStyle = {
-    backgroundColor: "#FFFFFF",
-    transition: "background-color 0.2s",
-  };
-
-  const viewBtnStyle = {
-    padding: "6px 12px",
-    backgroundColor: "#2DA44E",
-    color: "#FFFFFF",
-    border: "none",
-    borderRadius: "6px",
-    fontWeight: "bold",
-    cursor: "pointer",
-    fontSize: "13px",
-  };
 
   const handleViewDetails = (repo) => {
     navigate(`/details/${repo.id}`, { state: { repo } });
@@ -89,75 +56,84 @@ const RepoTable = ({ repos }) => {
 
   return (
     <div className="table-wrapper">
-    <div className="records-control">
-    <label htmlFor="recordsPerPage">Records:</label>
-    <select
-      id="recordsPerPage"
-      value={recordsPerPage}
-      onChange={(e) => {
-        setRecordsPerPage(Number(e.target.value));
-        setCurrentPage(1);
-      }}
-    >
-      <option value={5}>5</option>
-      <option value={10}>10</option>
-      <option value={20}>20</option>
-      <option value={50}>50</option>
-    </select>
-  </div>
+      <div className="records-control">
+        <label htmlFor="recordsPerPage">Records:</label>
+        <select
+          id="recordsPerPage"
+          value={recordsPerPage}
+          onChange={(e) => {
+            setRecordsPerPage(Number(e.target.value));
+            setCurrentPage(1);
+          }}>
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+          <option value={50}>50</option>
+        </select>
+      </div>
 
-  <table className="repo-table styled-repo-table">
-    <thead>
-    <tr>
-      <th onClick={() => handleSort("name")}>
-        {renderHeader("Repository", "name")}
-      </th>
-        <th>Description</th>
-      <th onClick={() => handleSort("updated_at")}>
-        {renderHeader("Last Modified", "updated_at")}
-      </th>
-        <th>License</th>
-      <th onClick={() => handleSort("forks_count")}>
-        {renderHeader("Forks", "forks_count")}
-      </th>
-        <th>Details</th>
-    </tr>
-    </thead>
+      <table className="repo-table styled-repo-table">
+        <thead>
+          <tr>
+            <th onClick={() => handleSort("name")}>
+              {renderHeader("Repository", "name")}
+            </th>
+            <th>Description</th>
+            <th onClick={() => handleSort("updated_at")}>
+              {renderHeader("Last Modified", "updated_at")}
+            </th>
+            <th>License</th>
+            <th onClick={() => handleSort("forks_count")}>
+              {renderHeader("Forks", "forks_count")}
+            </th>
+            <th>Details</th>
+          </tr>
+        </thead>
 
-    <tbody>
-      {currentRepos.map((repo) => (
-        <tr key={repo.id}>
-          <td>
-            <a href={repo.html_url} target="_blank" rel="noopener noreferrer">
-              {repo.name}
-            </a>
-          </td>
-          <td>{repo.description || "No description"}</td>
-          <td>{new Date(repo.updated_at).toLocaleDateString()}</td>
-          <td>{repo.license?.name || "No license"}</td>
-          <td>{repo.forks_count}</td>
-          <td>
-            <button onClick={() => handleViewDetails(repo)} className="view-btn">
-              View
-            </button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+        <tbody>
+          {currentRepos.map((repo) => (
+            <tr key={repo.id}>
+              <td>
+                <a
+                  href={repo.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer">
+                  {repo.name}
+                </a>
+              </td>
+              <td>{repo.description || "No description"}</td>
+              <td>{new Date(repo.updated_at).toLocaleDateString()}</td>
+              <td>{repo.license?.name || "No license"}</td>
+              <td>{repo.forks_count}</td>
+              <td>
+                <button
+                  onClick={() => handleViewDetails(repo)}
+                  className="view-btn">
+                  View
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-  <div className="pagination-controls">
-    <button onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))} disabled={currentPage === 1}>
-     ◀︎
-    </button>
-    <span>Page {currentPage} of {totalPages}</span>
-    <button onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages}>
-     ▶︎
-    </button>
-  </div>
-</div>
+      <div className="pagination-controls">
+        <button
+          onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+          disabled={currentPage === 1}>
+          ◀︎
+        </button>
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+          disabled={currentPage === totalPages}>
+          ▶︎
+        </button>
+      </div>
+    </div>
   );
-
 };
 
 export default RepoTable;
